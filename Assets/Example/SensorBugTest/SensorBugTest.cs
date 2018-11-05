@@ -43,6 +43,11 @@ public class SensorBugTest : MonoBehaviour
         new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2e60ac581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c2600ec581", Found = false },
         new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2e60ac581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c28c0fc581", Found = false },
 
+        //Player 2 Characteristics
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c20a14c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c25415c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c29e16c581", Found = false },
+
     };
 
 	public Characteristic GameMode = Characteristics[0];
@@ -54,6 +59,10 @@ public class SensorBugTest : MonoBehaviour
     public Characteristic Player1Impact = Characteristics[5];
     public Characteristic Player1Colour = Characteristics[6];
 
+    public Characteristic Player2Health = Characteristics[7];
+    public Characteristic Player2Impact = Characteristics[8];
+    public Characteristic Player2Colour = Characteristics[9];
+
     //Characteristic values???
     string GameModeValue;
     string GameStateValue;
@@ -61,6 +70,7 @@ public class SensorBugTest : MonoBehaviour
     string DifficultySelectedValue;
 
     uint Player1HealthValue;
+    uint Player2HealthValue;
 
     public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
 
@@ -345,6 +355,33 @@ public class SensorBugTest : MonoBehaviour
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             debugText.text = "value of Player1Health:" + Player1HealthValue;
+                        });
+
+                        Thread.Sleep(1000);
+
+
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player2Health.ServiceUUID,
+                        Player2Health.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                            //test++;
+
+
+                            _state = States.None;
+                            MiddlePanel.SetActive(true);
+                            //debugText.text = 
+
+                            if (BitConverter.IsLittleEndian)
+                                Array.Reverse(bytes);
+
+                            var sBytes = BitConverter.ToUInt32(bytes, 0);
+
+
+
+                            Player2HealthValue = UpdatePlayerHealth(sBytes);
+
+                            //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            debugText.text = "value of Player2Health:" + Player2HealthValue;
                         });
 
 

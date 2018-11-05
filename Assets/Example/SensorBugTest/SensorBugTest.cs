@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,26 +31,52 @@ public class SensorBugTest : MonoBehaviour
 	{
 
         //GAME SERVICE
-        //Game Mode Characteristic  81c4fbdc-c266-11e8-a355-529269fb1459
-		//new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c4ff06-c266-11e8-a355-529269fb1459", Found = false },
-        //new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c50078-c266-11e8-a355-529269fb1459", Found = false },
-        //new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c501ae-c266-11e8-a355-529269fb1459", Found = false },
-        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c20a14c581", Found = false },
-        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c27800c581", Found = false },
+        //Game Mode Characteristic 
         new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c206ffc481", Found = false },
-        
-        
-        //new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c29e16c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c27800c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c2ae01c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c2da02c581", Found = false },
         
         //ADD OTHER SERVICES AND CHARACTERISTICS HERE
+        //Player 1 Characteristics
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2e60ac581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c2160dc581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2e60ac581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c2600ec581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2e60ac581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c28c0fc581", Found = false },
 
-	};
+    };
 
-	public Characteristic ConfigureAccelerometer = Characteristics[0];
-	public Characteristic SubscribeAccelerometer = Characteristics[1];
-	public Characteristic PairingManagementStatus = Characteristics[2];
+	public Characteristic GameMode = Characteristics[0];
+	public Characteristic GameState = Characteristics[1];
+	public Characteristic PlayTimeSelected = Characteristics[2];
+    public Characteristic DifficultySelected = Characteristics[3];
 
-	public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
+    public Characteristic Player1Health = Characteristics[4];
+    public Characteristic Player1Impact = Characteristics[5];
+    public Characteristic Player1Colour = Characteristics[6];
+
+    //Characteristic values???
+    string GameModeValue;
+    string GameStateValue;
+    string PlaytimeSelectedValue;
+    string DifficultySelectedValue;
+
+    uint Player1HealthValue;
+
+    public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
+
+    public uint UpdatePlayerHealth(UInt32 health)
+    {
+        uint numLeds = 0;
+        //convert health into just number of LEDs
+        while (health > 0)
+        {
+            health = health >> 1;
+            numLeds++;
+        }
+
+        return numLeds;
+
+    }
     
     //checks if the found service and characterstic matches one of the ones in the array?
 	public Characteristic GetCharacteristic (string serviceUUID, string characteristicsUUID)
@@ -228,78 +255,104 @@ public class SensorBugTest : MonoBehaviour
 					});
 					break;
 
-				//case States.ReadPairingStatus:
-    //                    SensorBugStatusMessage = "Reading characteristics...";
-    //                    //checks to see if pairing is successful
-    //                    SetState (States.WaitPairingStatus, 5f);
-                        
-				//	BluetoothLEHardwareInterface.ReadCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, 
-    //                    PairingManagementStatus.CharacteristicUUID, (characteristic, bytes) => {
-    //                        debugText.text += " " + PairingManagementStatus.ServiceUUID + "----------" + PairingManagementStatus.CharacteristicUUID + " " + bytes.Length + "bytes length " + bytes[0] + "bytes[0]";
 
-
-    //                    if (bytes.Length >= 9)
-				//		{
-				//			SensorBugStatusMessage = string.Format ("Status byte: {0}", bytes[8]);
-				//			if ((bytes[8] & 0x01) == 0x01)
-				//			{
-    //                            SensorBugStatusMessage = "Paired";
-    //                            // we are paired
-    //                            // move on to configuring the accelerometer
-    //                            SetState (States.ConfigureAccelerometer, 0.5f);
-    //                        }
-				//			else
-				//			{
-				//				// we are not paired
-				//				// write the control register to trigger pairing
-				//				BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, PairingManagementStatus.CharacteristicUUID, new byte[] { 0x00 }, 1, true, (characteristic2) => {
-				//					SetState (States.ReadPairingStatus, 0.5f);
-				//				});
-				//			}
-				//		}
-				//		else
-				//		{
-				//			SensorBugStatusMessage = "Error retrieving status from pairing SensorBug";
-				//		}
-				//	});
-				//	break;
-
-				//case States.WaitPairingStatus:
-    //                    // if we got here we timed out waiting for pairing status
-    //                    SensorBugStatusMessage = "Disconnecting...";
-    //                    SetState (States.Disconnect, 0.5f);
-				//	break;
-
-				//case States.ConfigureAccelerometer:
-				//	SensorBugStatusMessage = "Configuring SensorBug Accelerometer...";
-				//	BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, ConfigureAccelerometer.ServiceUUID, ConfigureAccelerometer.CharacteristicUUID, _accelerometerConfigureBytes, _accelerometerConfigureBytes.Length, true, (address) => {
-				//		SensorBugStatusMessage = "Configured SensorBug Accelerometer";
-				//		SetState (States.SubscribeToAccelerometer, 2f);
-				//	});
-				//	break;
+                //Seems that you cannot subscribe to characteristics immediately after each other, needs some time in between! Currently using 1000ms, which maybe is long... also using delay, which maybe is not good... 
+                //Consider how to improve this in the future?
 
 				case States.SubscribeToAccelerometer:
-					SetState (States.SubscribingToAccelerometer, 5f);
+					SetState (States.SubscribingToAccelerometer, 10f);
 					SensorBugStatusMessage = "Subscribing to Game Mode...";
-					BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress (_deviceAddress, SubscribeAccelerometer.ServiceUUID, 
-                        SubscribeAccelerometer.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
-                            test++;
+                        //MAKE SURE THAT THIS IS ONLY HAPPENING ONCE...
+                    _state = States.None;
+                    test++;
+                        //debugText.text = " " +  test;
+
+                        debugText.text = " Subscribing to playtime...";
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, PlayTimeSelected.ServiceUUID,
+                        PlayTimeSelected.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                        //test++;
+
+
+
+
+                        _state = States.None;
+                            MiddlePanel.SetActive(true);
+                        //debugText.text = 
+
+                         PlaytimeSelectedValue = BitConverter.ToString(bytes);
+                        AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                        });
+
+                        debugText.text = " Tried to subscribe to playtime...";
+
+                        Thread.Sleep(1000);
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress (_deviceAddress, GameState.ServiceUUID, 
+                        GameState.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                            //test++;
 
 
 						_state = States.None;
 						MiddlePanel.SetActive (true);
                             //debugText.text = 
 
-						var sBytes = BitConverter.ToString (bytes);
-						AccelerometerText.text = "Accelerometer: " + sBytes;
-                            debugText.text = sBytes + " " + test;
-					});
-					break;
+						GameStateValue = BitConverter.ToString (bytes);
+                        debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //debugText.text = sBytes + " " + test;
+                        });
 
-				case States.SubscribingToAccelerometer:
-					// if we got here it means we timed out subscribing to the accelerometer
-					SetState (States.Disconnect, 0.5f);
-					break;
+                        Thread.Sleep(1000);
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, GameMode.ServiceUUID,
+                        GameMode.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                            //test++;
+
+
+                            _state = States.None;
+                            MiddlePanel.SetActive(true);
+                            //debugText.text = 
+
+                            GameModeValue = BitConverter.ToString(bytes);
+                            debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //debugText.text = sBytes + " " + test;
+                        });
+
+                        Thread.Sleep(1000);
+
+                        
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Health.ServiceUUID,
+                        Player1Health.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                            //test++;
+
+
+                            _state = States.None;
+                            MiddlePanel.SetActive(true);
+                            //debugText.text = 
+
+                            if (BitConverter.IsLittleEndian)
+                                Array.Reverse(bytes);
+
+                            var sBytes = BitConverter.ToUInt32(bytes,0);
+
+                   
+
+                            Player1HealthValue = UpdatePlayerHealth(sBytes);
+
+                            //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            debugText.text = "value of Player1Health:" + Player1HealthValue;
+                        });
+
+
+
+
+                        break;
+
+
 
 				case States.Disconnect:
 					SetState (States.Disconnecting, 5f);

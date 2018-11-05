@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class SensorBugTest : MonoBehaviour
 {
-	public string DeviceName = "SensorBug";
+	public string DeviceName = "2020BLE";
 
 	public Text AccelerometerText;
 	public Text SensorBugStatusText;
@@ -14,6 +14,10 @@ public class SensorBugTest : MonoBehaviour
 	public GameObject PairingMessage;
 	public GameObject TopPanel;
 	public GameObject MiddlePanel;
+
+    [SerializeField] Text debugText;
+
+    int test = 0;
 
 	public class Characteristic
 	{
@@ -24,9 +28,21 @@ public class SensorBugTest : MonoBehaviour
 
 	public static List<Characteristic> Characteristics = new List<Characteristic>
 	{
-		new Characteristic { ServiceUUID = "9DC84838-7619-4F09-A1CE-DDCF63225B10", CharacteristicUUID = "9DC84838-7619-4F09-A1CE-DDCF63225B11", Found = false },
-		new Characteristic { ServiceUUID = "9DC84838-7619-4F09-A1CE-DDCF63225B10", CharacteristicUUID = "9DC84838-7619-4F09-A1CE-DDCF63225B12", Found = false },
-		new Characteristic { ServiceUUID = "3188AC28-72D4-4006-BD96-C6C4BC6153A0", CharacteristicUUID = "3188AC28-72D4-4006-BD96-C6C4BC6153A1", Found = false },
+
+        //GAME SERVICE
+        //Game Mode Characteristic  81c4fbdc-c266-11e8-a355-529269fb1459
+		//new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c4ff06-c266-11e8-a355-529269fb1459", Found = false },
+        //new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c50078-c266-11e8-a355-529269fb1459", Found = false },
+        //new Characteristic { ServiceUUID = "81c4fbdc-c266-11e8-a355-529269fb1459", CharacteristicUUID = "81c501ae-c266-11e8-a355-529269fb1459", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c20a14c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c27800c581", Found = false },
+        new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2dcfbc481", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c206ffc481", Found = false },
+        
+        
+        //new Characteristic { ServiceUUID = "5914fb69-9252-55a3-e811-66c2b810c581", CharacteristicUUID = "5914fb69-9252-55a3-e811-66c29e16c581", Found = false },
+        
+        //ADD OTHER SERVICES AND CHARACTERISTICS HERE
+
 	};
 
 	public Characteristic ConfigureAccelerometer = Characteristics[0];
@@ -34,8 +50,11 @@ public class SensorBugTest : MonoBehaviour
 	public Characteristic PairingManagementStatus = Characteristics[2];
 
 	public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
+    
+    //checks if the found service and characterstic matches one of the ones in the array?
 	public Characteristic GetCharacteristic (string serviceUUID, string characteristicsUUID)
 	{
+        debugText.text += " " + serviceUUID + " ///--/// " +characteristicsUUID;
 		return Characteristics.Where (c => IsEqual (serviceUUID, c.ServiceUUID) && IsEqual (characteristicsUUID, c.CharacteristicUUID)).FirstOrDefault ();
 	}
 
@@ -72,6 +91,7 @@ public class SensorBugTest : MonoBehaviour
 		}
 	}
 
+    //Code for re-pairing with a device...
 	void Reset ()
 	{
 		_connected = false;
@@ -90,13 +110,17 @@ public class SensorBugTest : MonoBehaviour
 
 		_pairing = false;
 	}
-
+    
+    //Changes state of the code
 	void SetState (States newState, float timeout)
 	{
 		_state = newState;
 		_timeout = timeout;
 	}
 
+    //Initialization code?
+    // Sets the state to scan mode with a timeout of 0.1f
+    // if device has been found it will try to pair
 	void StartProcess ()
 	{
 		Reset ();
@@ -109,7 +133,7 @@ public class SensorBugTest : MonoBehaviour
 			if (_state == States.SubscribingToAccelerometer)
 			{
 				_pairing = true;
-				SensorBugStatusMessage = "Pairing to SensorBug";
+				SensorBugStatusMessage = "Pairing to 2020 device";
 
 				// if we get an error when trying to subscribe to the SensorBug it is
 				// most likely because we just paired with it. Right after pairing you
@@ -141,13 +165,18 @@ public class SensorBugTest : MonoBehaviour
 				{
 				case States.None:
 					break;
-
+                
+                //Scanning will look for a device that has the device name defined at the top of the code, currently "BLE2020"
 				case States.Scan:
-					BluetoothLEHardwareInterface.ScanForPeripheralsWithServices (null, (address, deviceName) => {
+                        //debugText.text = "I ran";
+                        BluetoothLEHardwareInterface.ScanForPeripheralsWithServices (null, (address, deviceName) => {
+
+                        //debugText.text += deviceName;
+                        
 
 						if (deviceName.Contains (DeviceName))
 						{
-							SensorBugStatusMessage = "Found a SensorBug";
+							SensorBugStatusMessage = "Found a 2020 Armor device";
 
 							BluetoothLEHardwareInterface.StopScan ();
 
@@ -163,22 +192,33 @@ public class SensorBugTest : MonoBehaviour
 					}, null, true);
 					break;
 
+                //After a device has been found it will automatically connect with it...
 				case States.Connect:
-					SensorBugStatusMessage = "Connecting to SensorBug...";
+					SensorBugStatusMessage = "Connecting to 2020 Armor device...";
 
 					BluetoothLEHardwareInterface.ConnectToPeripheral (_deviceAddress, null, null, (address, serviceUUID, characteristicUUID) => {
-
+                        debugText.text += "";
+                        //Checks first collected service and characteristic????
 						var characteristic = GetCharacteristic (serviceUUID, characteristicUUID);
 						if (characteristic != null)
-						{
+                        {
+                            SensorBugStatusMessage = "Checking the characteristics of 2020 Armor device...";
+
+
+                            //debugText.text += characteristicUUID + " ";
+                            //if first characteristic is found, it will try and find all of them and then compare... and then sets the connection
+                            //status to true...? moesv on to reading pairiring status...?
 							BluetoothLEHardwareInterface.Log (string.Format ("Found {0}, {1}", serviceUUID, characteristicUUID));
 
 							characteristic.Found = true;
 
 							if (AllCharacteristicsFound)
 							{
+                                debugText.text += " CONNECTED";
 								_connected = true;
-								SetState (States.ReadPairingStatus, 3f);
+
+                                // SetState (States.ReadPairingStatus, 3f);
+                                SetState(States.SubscribeToAccelerometer, 3f);
 							}
 						}
 					}, (disconnectAddress) => {
@@ -188,57 +228,71 @@ public class SensorBugTest : MonoBehaviour
 					});
 					break;
 
-				case States.ReadPairingStatus:
-					SetState (States.WaitPairingStatus, 5f);
-					BluetoothLEHardwareInterface.ReadCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, PairingManagementStatus.CharacteristicUUID, (characteristic, bytes) => {
-						if (bytes.Length >= 9)
-						{
-							SensorBugStatusMessage = string.Format ("Status byte: {0}", bytes[8]);
-							if ((bytes[8] & 0x01) == 0x01)
-							{
-								// we are paired
-								// move on to configuring the accelerometer
-								SetState (States.ConfigureAccelerometer, 0.5f);
-							}
-							else
-							{
-								// we are not paired
-								// write the control register to trigger pairing
-								BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, PairingManagementStatus.CharacteristicUUID, new byte[] { 0x00 }, 1, true, (characteristic2) => {
-									SetState (States.ReadPairingStatus, 0.5f);
-								});
-							}
-						}
-						else
-						{
-							SensorBugStatusMessage = "Error retrieving status from pairing SensorBug";
-						}
-					});
-					break;
+				//case States.ReadPairingStatus:
+    //                    SensorBugStatusMessage = "Reading characteristics...";
+    //                    //checks to see if pairing is successful
+    //                    SetState (States.WaitPairingStatus, 5f);
+                        
+				//	BluetoothLEHardwareInterface.ReadCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, 
+    //                    PairingManagementStatus.CharacteristicUUID, (characteristic, bytes) => {
+    //                        debugText.text += " " + PairingManagementStatus.ServiceUUID + "----------" + PairingManagementStatus.CharacteristicUUID + " " + bytes.Length + "bytes length " + bytes[0] + "bytes[0]";
 
-				case States.WaitPairingStatus:
-					// if we got here we timed out waiting for pairing status
-					SetState (States.Disconnect, 0.5f);
-					break;
 
-				case States.ConfigureAccelerometer:
-					SensorBugStatusMessage = "Configuring SensorBug Accelerometer...";
-					BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, ConfigureAccelerometer.ServiceUUID, ConfigureAccelerometer.CharacteristicUUID, _accelerometerConfigureBytes, _accelerometerConfigureBytes.Length, true, (address) => {
-						SensorBugStatusMessage = "Configured SensorBug Accelerometer";
-						SetState (States.SubscribeToAccelerometer, 2f);
-					});
-					break;
+    //                    if (bytes.Length >= 9)
+				//		{
+				//			SensorBugStatusMessage = string.Format ("Status byte: {0}", bytes[8]);
+				//			if ((bytes[8] & 0x01) == 0x01)
+				//			{
+    //                            SensorBugStatusMessage = "Paired";
+    //                            // we are paired
+    //                            // move on to configuring the accelerometer
+    //                            SetState (States.ConfigureAccelerometer, 0.5f);
+    //                        }
+				//			else
+				//			{
+				//				// we are not paired
+				//				// write the control register to trigger pairing
+				//				BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, PairingManagementStatus.ServiceUUID, PairingManagementStatus.CharacteristicUUID, new byte[] { 0x00 }, 1, true, (characteristic2) => {
+				//					SetState (States.ReadPairingStatus, 0.5f);
+				//				});
+				//			}
+				//		}
+				//		else
+				//		{
+				//			SensorBugStatusMessage = "Error retrieving status from pairing SensorBug";
+				//		}
+				//	});
+				//	break;
+
+				//case States.WaitPairingStatus:
+    //                    // if we got here we timed out waiting for pairing status
+    //                    SensorBugStatusMessage = "Disconnecting...";
+    //                    SetState (States.Disconnect, 0.5f);
+				//	break;
+
+				//case States.ConfigureAccelerometer:
+				//	SensorBugStatusMessage = "Configuring SensorBug Accelerometer...";
+				//	BluetoothLEHardwareInterface.WriteCharacteristic (_deviceAddress, ConfigureAccelerometer.ServiceUUID, ConfigureAccelerometer.CharacteristicUUID, _accelerometerConfigureBytes, _accelerometerConfigureBytes.Length, true, (address) => {
+				//		SensorBugStatusMessage = "Configured SensorBug Accelerometer";
+				//		SetState (States.SubscribeToAccelerometer, 2f);
+				//	});
+				//	break;
 
 				case States.SubscribeToAccelerometer:
 					SetState (States.SubscribingToAccelerometer, 5f);
-					SensorBugStatusMessage = "Subscribing to SensorBug Accelerometer...";
-					BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress (_deviceAddress, SubscribeAccelerometer.ServiceUUID, SubscribeAccelerometer.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+					SensorBugStatusMessage = "Subscribing to Game Mode...";
+					BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress (_deviceAddress, SubscribeAccelerometer.ServiceUUID, 
+                        SubscribeAccelerometer.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+                            test++;
+
 
 						_state = States.None;
 						MiddlePanel.SetActive (true);
+                            //debugText.text = 
 
 						var sBytes = BitConverter.ToString (bytes);
 						AccelerometerText.text = "Accelerometer: " + sBytes;
+                            debugText.text = sBytes + " " + test;
 					});
 					break;
 

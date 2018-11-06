@@ -8,15 +8,19 @@ using UnityEngine.UI;
 public class SensorBugTest : MonoBehaviour
 {
 	public string DeviceName = "2020BLE";
+    [SerializeField] float maxHealth = 24f;
+    [SerializeField] Slider p1healthBar;
+    [SerializeField] Slider p2healthBar;
 
-	public Text AccelerometerText;
+
+	//public Text AccelerometerText;
 	public Text SensorBugStatusText;
 
-	public GameObject PairingMessage;
-	public GameObject TopPanel;
-	public GameObject MiddlePanel;
+	//public GameObject PairingMessage;
+	//public GameObject TopPanel;
+	//public GameObject MiddlePanel;
 
-    [SerializeField] Text debugText;
+    //[SerializeField] Text debugText;
 
     int test = 0;
 
@@ -74,7 +78,7 @@ public class SensorBugTest : MonoBehaviour
 
     public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
 
-    public uint UpdatePlayerHealth(UInt32 health)
+    public uint UpdatePlayerHealth(UInt32 health, bool isP1)
     {
         uint numLeds = 0;
         //convert health into just number of LEDs
@@ -84,6 +88,8 @@ public class SensorBugTest : MonoBehaviour
             numLeds++;
         }
 
+        setHealthBar((int)numLeds, isP1);
+        SensorBugStatusText.text = numLeds + " health";
         return numLeds;
 
     }
@@ -91,7 +97,7 @@ public class SensorBugTest : MonoBehaviour
     //checks if the found service and characterstic matches one of the ones in the array?
 	public Characteristic GetCharacteristic (string serviceUUID, string characteristicsUUID)
 	{
-        debugText.text += " " + serviceUUID + " ///--/// " +characteristicsUUID;
+        //debugText.text += " " + serviceUUID + " ///--/// " +characteristicsUUID;
 		return Characteristics.Where (c => IsEqual (serviceUUID, c.ServiceUUID) && IsEqual (characteristicsUUID, c.CharacteristicUUID)).FirstOrDefault ();
 	}
 
@@ -138,9 +144,9 @@ public class SensorBugTest : MonoBehaviour
 
 		if (!_pairing)
 		{
-			PairingMessage.SetActive (true);
-			TopPanel.SetActive (false);
-			MiddlePanel.SetActive (false);
+			//PairingMessage.SetActive (true);
+			//TopPanel.SetActive (false);
+			//MiddlePanel.SetActive (false);
 
 			SensorBugStatusMessage = "";
 		}
@@ -217,8 +223,8 @@ public class SensorBugTest : MonoBehaviour
 
 							BluetoothLEHardwareInterface.StopScan ();
 
-							PairingMessage.SetActive (false);
-							TopPanel.SetActive (true);
+							//PairingMessage.SetActive (false);
+							//TopPanel.SetActive (true);
 
 							// found a device with the name we want
 							// this example does not deal with finding more than one
@@ -234,7 +240,7 @@ public class SensorBugTest : MonoBehaviour
 					SensorBugStatusMessage = "Connecting to 2020 Armor device...";
 
 					BluetoothLEHardwareInterface.ConnectToPeripheral (_deviceAddress, null, null, (address, serviceUUID, characteristicUUID) => {
-                        debugText.text += "";
+                        //debugText.text += "";
                         //Checks first collected service and characteristic????
 						var characteristic = GetCharacteristic (serviceUUID, characteristicUUID);
 						if (characteristic != null)
@@ -251,7 +257,7 @@ public class SensorBugTest : MonoBehaviour
 
 							if (AllCharacteristicsFound)
 							{
-                                debugText.text += " CONNECTED";
+                                //debugText.text += " CONNECTED";
 								_connected = true;
 
                                 // SetState (States.ReadPairingStatus, 3f);
@@ -277,7 +283,7 @@ public class SensorBugTest : MonoBehaviour
                     test++;
                         //debugText.text = " " +  test;
 
-                        debugText.text = " Subscribing to playtime...";
+                        //debugText.text = " Subscribing to playtime...";
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, PlayTimeSelected.ServiceUUID,
                         PlayTimeSelected.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
                         //test++;
@@ -286,15 +292,15 @@ public class SensorBugTest : MonoBehaviour
 
 
                         _state = States.None;
-                            MiddlePanel.SetActive(true);
+                            //MiddlePanel.SetActive(true);
                         //debugText.text = 
 
                          PlaytimeSelectedValue = BitConverter.ToString(bytes);
-                        AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                            debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                        //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                         });
 
-                        debugText.text = " Tried to subscribe to playtime...";
+                        //debugText.text = " Tried to subscribe to playtime...";
 
                         Thread.Sleep(1000);
 
@@ -304,12 +310,12 @@ public class SensorBugTest : MonoBehaviour
 
 
 						_state = States.None;
-						MiddlePanel.SetActive (true);
+						//MiddlePanel.SetActive (true);
                             //debugText.text = 
 
 						GameStateValue = BitConverter.ToString (bytes);
-                        debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                            AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                        //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                         //   AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = sBytes + " " + test;
                         });
 
@@ -321,12 +327,12 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                            MiddlePanel.SetActive(true);
+                           // MiddlePanel.SetActive(true);
                             //debugText.text = 
 
                             GameModeValue = BitConverter.ToString(bytes);
-                            debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                            AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                           // debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                           // AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = sBytes + " " + test;
                         });
 
@@ -340,7 +346,7 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                            MiddlePanel.SetActive(true);
+                           // MiddlePanel.SetActive(true);
                             //debugText.text = 
 
                             if (BitConverter.IsLittleEndian)
@@ -348,13 +354,13 @@ public class SensorBugTest : MonoBehaviour
 
                             var sBytes = BitConverter.ToUInt32(bytes,0);
 
-                   
+                            
 
-                            Player1HealthValue = UpdatePlayerHealth(sBytes);
+                            Player1HealthValue = UpdatePlayerHealth(sBytes, true);
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                            debugText.text = "value of Player1Health:" + Player1HealthValue;
+                          //  debugText.text = "value of Player1Health:" + Player1HealthValue;
                         });
 
                         Thread.Sleep(1000);
@@ -367,7 +373,7 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                            MiddlePanel.SetActive(true);
+                          //  MiddlePanel.SetActive(true);
                             //debugText.text = 
 
                             if (BitConverter.IsLittleEndian)
@@ -377,11 +383,11 @@ public class SensorBugTest : MonoBehaviour
 
 
 
-                            Player2HealthValue = UpdatePlayerHealth(sBytes);
+                            Player2HealthValue = UpdatePlayerHealth(sBytes, false);
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                            debugText.text = "value of Player2Health:" + Player2HealthValue;
+                           // debugText.text = "value of Player2Health:" + Player2HealthValue;
                         });
 
 
@@ -421,4 +427,22 @@ public class SensorBugTest : MonoBehaviour
 	{
 		return (uuid1.ToUpper ().CompareTo (uuid2.ToUpper ()) == 0);
 	}
+
+
+
+    void setHealthBar(int amount, bool isP1)
+    {
+        //float healthPerc = amount / maxHealth;
+
+        if (isP1)
+        {
+            p1healthBar.value = amount;
+        }
+        else
+        {
+            p2healthBar.value = amount;
+        }
+        
+    }
+
 }

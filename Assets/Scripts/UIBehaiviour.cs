@@ -9,9 +9,9 @@ public class UIBehaiviour : MonoBehaviour
 	public float timer;
 	public Text timerShadow;
 
-
 	public Slider hpBar;
 	public int hpMax;
+    bool hasStarted = false;
 
 	void Start ()
 	{
@@ -28,27 +28,38 @@ public class UIBehaiviour : MonoBehaviour
 
 	void Update ()
 	{
-		
-		if (timer < 0){
-			timerShadow.text = "" + 0;
-			timerText.text = "" + 0;
-		}
-		if (timer > 0) {
 
-			timer = timer - Time.deltaTime;
-			timerShadow.text = "" + Mathf.Floor (timer);
-			timerText.text = "" + Mathf.Floor (timer);
+        if (hasStarted)
+        {
+            if (timer < 0)
+            {
+                timerShadow.text = "" + 0;
+                timerText.text = "" + 0;
+            }
+            if (timer > 0)
+            {
 
-		} else {
+                timer = timer - Time.deltaTime;
+                timerShadow.text = "" + Mathf.Floor(timer);
+                timerText.text = "" + Mathf.Floor(timer);
+
+            }
+        }
 		
-			return;
-		}
 	}
-
-
-
-    public void setP1health()
+    
+    public void startTimer()
     {
-
+        hasStarted = true;
     }
+
+    public void resetTimer(float time)
+    {
+        timer = time;
+        timer = timer - Time.deltaTime;
+        timerShadow.text = "" + Mathf.Floor(timer);
+        timerText.text = "" + Mathf.Floor(timer);
+    }
+
+    
 }

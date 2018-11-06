@@ -54,6 +54,11 @@ public class SensorBugTest : MonoBehaviour
 
     };
 
+    //a time of 0xFF means that the game time selected is INFINITE
+    public uint[] TimerValues = {0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
+
+    
+
 	public Characteristic GameMode = Characteristics[0];
 	public Characteristic GameState = Characteristics[1];
 	public Characteristic PlayTimeSelected = Characteristics[2];
@@ -70,8 +75,10 @@ public class SensorBugTest : MonoBehaviour
     //Characteristic values???
     string GameModeValue;
     string GameStateValue;
-    string PlaytimeSelectedValue;
+    //uint PlaytimeSelectedValue;
     string DifficultySelectedValue;
+
+    int timerAmount = 0;
 
     uint Player1HealthValue;
     uint Player2HealthValue;
@@ -89,10 +96,44 @@ public class SensorBugTest : MonoBehaviour
         }
 
         setHealthBar((int)numLeds, isP1);
-        SensorBugStatusText.text = numLeds + " health";
+        //SensorBugStatusText.text = numLeds + " health";
         return numLeds;
 
     }
+
+    void changeGameState(int stateNum)
+    {
+        SensorBugStatusText.text = "game state integer: " + stateNum;
+
+        switch (stateNum)
+        {
+            case 4:     // GAME STARTS
+                startTimer();
+                break;
+            case 8:     // GAME ENDS
+                endGame();
+                break;
+            default:
+                break;
+        }
+    }
+
+    void startTimer()
+    {
+        GetComponent<UIBehaiviour>().startTimer();
+    }
+
+    void endGame()
+    {
+
+    }
+
+    void setTimerAmount(int amount)
+    {
+        //timerAmount = amount;
+        GetComponent<UIBehaiviour>().resetTimer(amount);
+    }
+
     
     //checks if the found service and characterstic matches one of the ones in the array?
 	public Characteristic GetCharacteristic (string serviceUUID, string characteristicsUUID)
@@ -295,7 +336,10 @@ public class SensorBugTest : MonoBehaviour
                             //MiddlePanel.SetActive(true);
                         //debugText.text = 
 
-                         PlaytimeSelectedValue = BitConverter.ToString(bytes);
+                         //PlaytimeSelectedValue = BitConverter.ToString(bytes);
+
+                        // PlaytimeSelectedValue = TimerValues[bytes[0]];
+                            setTimerAmount((int)TimerValues[bytes[0]]);
                         //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                         });
@@ -313,9 +357,14 @@ public class SensorBugTest : MonoBehaviour
 						//MiddlePanel.SetActive (true);
                             //debugText.text = 
 
-						GameStateValue = BitConverter.ToString (bytes);
-                        //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                         //   AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+						//GameStateValue = BitConverter.ToString (bytes);
+                            var sBytes = BitConverter.ToUInt32(bytes, 0);
+                            SensorBugStatusText.text = sBytes + " is the game state";
+                            changeGameState((int)sBytes);
+
+
+                            //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //   AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = sBytes + " " + test;
                         });
 
@@ -327,12 +376,16 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                           // MiddlePanel.SetActive(true);
+                            // MiddlePanel.SetActive(true);
                             //debugText.text = 
 
-                            GameModeValue = BitConverter.ToString(bytes);
-                           // debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                           // AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //GameModeValue = BitConverter.ToString(bytes);
+                            var sBytes = BitConverter.ToUInt32(bytes, 0);
+
+
+
+                            // debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            // AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = sBytes + " " + test;
                         });
 

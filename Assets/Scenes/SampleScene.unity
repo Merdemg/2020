@@ -227,11 +227,11 @@ RectTransform:
   m_Father: {fileID: 535319774}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 75.04999, y: 59.03}
-  m_SizeDelta: {x: 150.1, y: 117.899994}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 150.09998, y: 117.899994}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &83553764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2076,6 +2076,7 @@ MonoBehaviour:
   p1healthBar: {fileID: 1995967371}
   p2healthBar: {fileID: 142947043}
   SensorBugStatusText: {fileID: 1964602098}
+  TimerValues: 000000000a0000000f000000140000001e0000002d0000003c0000005a00000078000000b4000000ff000000
 --- !u!1 &1730635225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2336,10 +2337,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 25
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -2370,7 +2371,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0.0000076294, y: 39.299988}
+  m_AnchoredPosition: {x: 0, y: 316.82}
   m_SizeDelta: {x: 705.6, y: 78.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1995967370

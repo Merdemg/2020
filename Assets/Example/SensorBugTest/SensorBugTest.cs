@@ -352,15 +352,17 @@ public class SensorBugTest : MonoBehaviour
                         GameState.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
                             //test++;
 
+                            SensorBugStatusText.text = "hi ";
+                        _state = States.None;
 
-						_state = States.None;
-						//MiddlePanel.SetActive (true);
-                            //debugText.text = 
+
+
+                          
 
 						//GameStateValue = BitConverter.ToString (bytes);
-                            var sBytes = BitConverter.ToUInt32(bytes, 0);
-                            SensorBugStatusText.text = sBytes + " is the game state";
-                            changeGameState((int)sBytes);
+                           // var sBytes = BitConverter.ToUInt32(bytes, 0);
+                           // SensorBugStatusText.text = sBytes + " is the game state";
+                            changeGameState(bytes[0]);
 
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;

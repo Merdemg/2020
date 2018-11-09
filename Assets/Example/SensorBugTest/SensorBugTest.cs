@@ -482,7 +482,7 @@ public class SensorBugTest : MonoBehaviour
                             {
                                 if (IsCombo2On)
                                 {
-                                    if (ComboTimer2 < 1)
+                                    if (ComboTimer2 < 2)
                                     {
                                         animatorP2Combo.SetTrigger("Combo");
                                         SensorBugStatusText.text = "Player 2 got a combo!";
@@ -501,7 +501,7 @@ public class SensorBugTest : MonoBehaviour
                             {
                                 if (IsCombo1On)
                                 {
-                                    if (ComboTimer1 < 1)
+                                    if (ComboTimer1 < 2)
                                     {
                                         animatorP1Combo.SetTrigger("Combo");
                                         SensorBugStatusText.text = "Player 1 got a combo!";
@@ -572,7 +572,7 @@ public class SensorBugTest : MonoBehaviour
                             {
                                 if (IsCombo1On)
                                 {
-                                    if (ComboTimer1 < 1)
+                                    if (ComboTimer1 < 2)
                                     {
                                         animatorP1Combo.SetTrigger("Combo");
                                         SensorBugStatusText.text = "Player 1 got a combo!";
@@ -591,7 +591,7 @@ public class SensorBugTest : MonoBehaviour
                             {
                                 if (IsCombo2On)
                                 {
-                                    if (ComboTimer2 < 1)
+                                    if (ComboTimer2 < 2)
                                     {
                                         animatorP2Combo.SetTrigger("Combo");
                                         SensorBugStatusText.text = "Player 2 got a combo!";

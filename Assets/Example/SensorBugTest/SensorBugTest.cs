@@ -15,12 +15,30 @@ public class SensorBugTest : MonoBehaviour
 
 	//public Text AccelerometerText;
 	public Text SensorBugStatusText;
+    public Text BigHitText;
 
-	//public GameObject PairingMessage;
-	//public GameObject TopPanel;
-	//public GameObject MiddlePanel;
+    //public GameObject PairingMessage;
+    //public GameObject TopPanel;
+    //public GameObject MiddlePanel;
 
     //[SerializeField] Text debugText;
+
+    //ANIMATION VARIABLES
+    //Round start
+    public Animator animatorReady;
+    public Animator animatorStart;
+    public Animator animatorP1Combo;
+    public Animator animatorP2Combo;
+    public Animator animatorP1BigHit;
+    public Animator animatorP2BigHit;
+    //WINNER ANIMATION SHIT
+    public Animator animatorPlayer;
+    public Animator animatorWins;
+    public Text playerName;
+    public Text winText;
+    public Color playerOneColor;
+    public Color playerTwoColor;
+
 
     int test = 0;
 
@@ -57,6 +75,7 @@ public class SensorBugTest : MonoBehaviour
     //a time of 0xFF means that the game time selected is INFINITE
     public uint[] TimerValues = {0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
 
+    /// LA LA LA
     
 
 	public Characteristic GameMode = Characteristics[0];
@@ -83,6 +102,12 @@ public class SensorBugTest : MonoBehaviour
     uint Player1HealthValue;
     uint Player2HealthValue;
 
+    bool IsPlayer1Red;
+    float ComboTimer1;
+    float ComboTimer2;
+    bool IsCombo1On;
+    bool IsCombo2On;
+
     public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
 
     public uint UpdatePlayerHealth(UInt32 health, bool isP1)
@@ -108,6 +133,8 @@ public class SensorBugTest : MonoBehaviour
         switch (stateNum)
         {
             case 4:     // GAME STARTS
+                animatorReady.SetTrigger("MatchStart");
+                animatorStart.SetTrigger("MatchStart");
                 startTimer();
                 break;
             case 8:     // GAME ENDS
@@ -238,7 +265,18 @@ public class SensorBugTest : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (_timeout > 0f)
+        
+        if (IsCombo2On)
+        {
+            ComboTimer2 += Time.deltaTime;
+        }
+
+        if (IsCombo1On)
+        {
+            ComboTimer1 += Time.deltaTime;
+        }
+
+        if (_timeout > 0f)
 		{
 			_timeout -= Time.deltaTime;
 			if (_timeout <= 0f)
@@ -413,14 +451,77 @@ public class SensorBugTest : MonoBehaviour
 
                             Player1HealthValue = UpdatePlayerHealth(sBytes, true);
 
+                            //check if player is dead
+                            if(Player1HealthValue == 0)
+                            {
+                                if(IsPlayer1Red){
+                                    //Player 2 WINS
+                                    winText.color = playerTwoColor;
+                                    playerName.color = playerTwoColor;
+                                    playerName.text = "Christoph Sonnen";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                }
+                                else
+                                {
+                                    //Player 1 Wins
+                                    winText.color = playerOneColor;
+                                    playerName.color = playerOneColor;
+                                    playerName.text = "Ali Ghafour";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                    
+                                }
+                            }
+
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                          //  debugText.text = "value of Player1Health:" + Player1HealthValue;
+                            //  debugText.text = "value of Player1Health:" + Player1HealthValue;
+
+                            if (IsPlayer1Red)
+                            {
+                                if (IsCombo2On)
+                                {
+                                    if (ComboTimer2 < 1)
+                                    {
+                                        animatorP2Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 2 got a combo!";
+                                        ComboTimer2 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 2 timer";
+                                        ComboTimer2 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo2On = true;
+                            }
+                            else
+                            {
+                                if (IsCombo1On)
+                                {
+                                    if (ComboTimer1 < 1)
+                                    {
+                                        animatorP1Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 1 got a combo!";
+                                        ComboTimer1 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 1 timer";
+                                        ComboTimer1 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo1On = true;
+                            }
+
                         });
 
                         Thread.Sleep(1000);
 
-
+                        
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player2Health.ServiceUUID,
                         Player2Health.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -437,16 +538,172 @@ public class SensorBugTest : MonoBehaviour
                             var sBytes = BitConverter.ToUInt32(bytes, 0);
 
 
-
                             Player2HealthValue = UpdatePlayerHealth(sBytes, false);
+                            //check if player is dead
+                            if (Player2HealthValue == 0)
+                            {
+                                if (IsPlayer1Red)
+                                {
+                                    //Player 1 WINS
+                                    playerName.color = playerOneColor;
+                                    winText.color = playerOneColor;
+                                    playerName.text = "Ali Ghafour";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                }
+                                else
+                                {
+                                    //Player 2 WINS
+                                    winText.color = playerTwoColor;
+                                    playerName.color = playerTwoColor;
+                                    playerName.text = "Christoph Sonnen";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                
+                                }
+                            }
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
-                           // debugText.text = "value of Player2Health:" + Player2HealthValue;
+                            // debugText.text = "value of Player2Health:" + Player2HealthValue;
+
+                            //Test player 2 got hit
+                            if (IsPlayer1Red)
+                            {
+                                if (IsCombo1On)
+                                {
+                                    if (ComboTimer1 < 1)
+                                    {
+                                        animatorP1Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 1 got a combo!";
+                                        ComboTimer1 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 1 timer";
+                                        ComboTimer1 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo1On = true;
+                            }
+                            else
+                            {
+                                if (IsCombo2On)
+                                {
+                                    if (ComboTimer2 < 1)
+                                    {
+                                        animatorP2Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 2 got a combo!";
+                                        ComboTimer2 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 2 timer";
+                                        ComboTimer2 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo2On = true;
+                            }
                         });
 
 
+                        //Test Players Colour
+                        Thread.Sleep(1000);
 
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Colour.ServiceUUID,
+                        Player1Colour.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) =>
+                        {
+
+                            _state = States.None;
+
+                            
+                            // if (BitConverter.IsLittleEndian)
+                            //   Array.Reverse(bytes);
+
+                            var sBytes = BitConverter.ToString(bytes);
+
+
+                            //Player1ColourValue = Player1Colour.ServiceUUID;
+                            //SensorBugStatusText.text = "P1 Color: " + sBytes;
+
+
+                            if (sBytes == "01")
+                                IsPlayer1Red = true;
+                            else
+                                IsPlayer1Red = false;
+                        });
+
+                        //Test Big Hit
+                        Thread.Sleep(1000);
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Impact.ServiceUUID,
+                        Player1Impact.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+
+                            _state = States.None;
+
+
+                            // if (BitConverter.IsLittleEndian)
+                            //   Array.Reverse(bytes);
+
+                            var sBytes = bytes[0];
+
+
+                            if (sBytes >= 4)
+                            {
+                                if (IsPlayer1Red)
+                                {
+                                    animatorP2BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P2 GOT A BIG HIT!";
+                                }
+                                else {
+                                    animatorP1BigHit.SetTrigger("Hit");
+                                BigHitText.text = "P1 GOT A BIG HIT!";
+                            }
+                            }
+                            else
+                            {
+                                if (IsPlayer1Red)
+                                    BigHitText.text = "P2 got a meh hit!";
+                                else
+                                    BigHitText.text = "P1 got a meh hit!";
+                            }
+                        });
+
+                        Thread.Sleep(1000);
+
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player2Impact.ServiceUUID,
+                        Player2Impact.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
+
+                            _state = States.None;
+
+
+                             if (BitConverter.IsLittleEndian)
+                               Array.Reverse(bytes);
+
+                            var sBytes = bytes[0];
+
+
+                            if (sBytes >= 4)
+                            {
+                                if (IsPlayer1Red) {
+                                    animatorP1BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P1 GOT A BIG HIT!";
+                                }
+                                else {
+                                    animatorP2BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P2 GOT A BIG HIT!";
+                            }
+                            }
+                            else
+                            {
+                                if (IsPlayer1Red)
+                                    BigHitText.text = "P1 got a meh hit!";
+                                else
+                                    BigHitText.text = "P2 got a meh hit!";
+                            }
+                        });
 
                         break;
 
@@ -489,15 +746,35 @@ public class SensorBugTest : MonoBehaviour
     {
         //float healthPerc = amount / maxHealth;
 
-        if (isP1)
+        if (IsPlayer1Red)
         {
-            p1healthBar.value = amount;
+            //SensorBugStatusText.text = "Player 1 is red!";
+            if (isP1)
+            {
+                p1healthBar.value = amount;
+            }
+            else
+            {
+                p2healthBar.value = amount;
+            }
         }
         else
         {
-            p2healthBar.value = amount;
+            //SensorBugStatusText.text = "Player 2 is red!";
+            if (isP1)
+            {
+                p2healthBar.value = amount;
+            }
+            else
+            {
+                p1healthBar.value = amount;
+            }
         }
-        
+    }
+
+    void checkCombo(bool isP1Red)
+    {
+
     }
 
 }

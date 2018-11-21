@@ -75,6 +75,9 @@ public class SensorBugTest : MonoBehaviour
     //a time of 0xFF means that the game time selected is INFINITE
     public uint[] TimerValues = {0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
 
+    /// LA LA LA
+    
+
 	public Characteristic GameMode = Characteristics[0];
 	public Characteristic GameState = Characteristics[1];
 	public Characteristic PlayTimeSelected = Characteristics[2];
@@ -99,8 +102,6 @@ public class SensorBugTest : MonoBehaviour
     uint Player1HealthValue;
     uint Player2HealthValue;
 
-    int ComboMeter = 2;
-    int BigHitMeter = 4;
     bool IsPlayer1Red;
     float ComboTimer1;
     float ComboTimer2;
@@ -453,15 +454,69 @@ public class SensorBugTest : MonoBehaviour
                             //check if player is dead
                             if(Player1HealthValue == 0)
                             {
-                                TriggerPlayerDeath(IsPlayer1Red, true);
+                                if(IsPlayer1Red){
+                                    //Player 2 WINS
+                                    winText.color = playerTwoColor;
+                                    playerName.color = playerTwoColor;
+                                    playerName.text = "Christoph Sonnen";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                }
+                                else
+                                {
+                                    //Player 1 Wins
+                                    winText.color = playerOneColor;
+                                    playerName.color = playerOneColor;
+                                    playerName.text = "Ali Ghafour";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                    
+                                }
                             }
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //  debugText.text = "value of Player1Health:" + Player1HealthValue;
 
+                            if (IsPlayer1Red)
+                            {
+                                if (IsCombo2On)
+                                {
+                                    if (ComboTimer2 < 2)
+                                    {
+                                        animatorP2Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 2 got a combo!";
+                                        ComboTimer2 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 2 timer";
+                                        ComboTimer2 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo2On = true;
+                            }
+                            else
+                            {
+                                if (IsCombo1On)
+                                {
+                                    if (ComboTimer1 < 2)
+                                    {
+                                        animatorP1Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 1 got a combo!";
+                                        ComboTimer1 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 1 timer";
+                                        ComboTimer1 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo1On = true;
+                            }
 
-                            CheckPlayerCombo(IsPlayer1Red, true);
                         });
 
                         Thread.Sleep(1000);
@@ -487,7 +542,25 @@ public class SensorBugTest : MonoBehaviour
                             //check if player is dead
                             if (Player2HealthValue == 0)
                             {
-                                TriggerPlayerDeath(IsPlayer1Red, false);
+                                if (IsPlayer1Red)
+                                {
+                                    //Player 1 WINS
+                                    playerName.color = playerOneColor;
+                                    winText.color = playerOneColor;
+                                    playerName.text = "Ali Ghafour";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                }
+                                else
+                                {
+                                    //Player 2 WINS
+                                    winText.color = playerTwoColor;
+                                    playerName.color = playerTwoColor;
+                                    playerName.text = "Christoph Sonnen";
+                                    animatorPlayer.SetTrigger("Win");
+                                    animatorWins.SetTrigger("Win");
+                                
+                                }
                             }
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
@@ -495,8 +568,44 @@ public class SensorBugTest : MonoBehaviour
                             // debugText.text = "value of Player2Health:" + Player2HealthValue;
 
                             //Test player 2 got hit
-                            CheckPlayerCombo(IsPlayer1Red, false);
-                           
+                            if (IsPlayer1Red)
+                            {
+                                if (IsCombo1On)
+                                {
+                                    if (ComboTimer1 < 2)
+                                    {
+                                        animatorP1Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 1 got a combo!";
+                                        ComboTimer1 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 1 timer";
+                                        ComboTimer1 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo1On = true;
+                            }
+                            else
+                            {
+                                if (IsCombo2On)
+                                {
+                                    if (ComboTimer2 < 2)
+                                    {
+                                        animatorP2Combo.SetTrigger("Combo");
+                                        SensorBugStatusText.text = "Player 2 got a combo!";
+                                        ComboTimer2 = 0;
+                                    }
+                                    else
+                                    {
+                                        SensorBugStatusText.text = "Reset combo 2 timer";
+                                        ComboTimer2 = 0;
+                                    }
+                                }
+                                else
+                                    IsCombo2On = true;
+                            }
                         });
 
 
@@ -515,7 +624,15 @@ public class SensorBugTest : MonoBehaviour
 
                             var sBytes = BitConverter.ToString(bytes);
 
-                            CheckPlayerColor(sBytes);
+
+                            //Player1ColourValue = Player1Colour.ServiceUUID;
+                            //SensorBugStatusText.text = "P1 Color: " + sBytes;
+
+
+                            if (sBytes == "01")
+                                IsPlayer1Red = true;
+                            else
+                                IsPlayer1Red = false;
                         });
 
                         //Test Big Hit
@@ -533,9 +650,25 @@ public class SensorBugTest : MonoBehaviour
                             var sBytes = bytes[0];
 
 
-                            if (sBytes >= BigHitMeter)
-                                CheckBigHit(IsPlayer1Red, true);
-                            
+                            if (sBytes >= 4)
+                            {
+                                if (IsPlayer1Red)
+                                {
+                                    animatorP2BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P2 GOT A BIG HIT!";
+                                }
+                                else {
+                                    animatorP1BigHit.SetTrigger("Hit");
+                                BigHitText.text = "P1 GOT A BIG HIT!";
+                            }
+                            }
+                            else
+                            {
+                                if (IsPlayer1Red)
+                                    BigHitText.text = "P2 got a meh hit!";
+                                else
+                                    BigHitText.text = "P1 got a meh hit!";
+                            }
                         });
 
                         Thread.Sleep(1000);
@@ -552,9 +685,24 @@ public class SensorBugTest : MonoBehaviour
                             var sBytes = bytes[0];
 
 
-                            if (sBytes >= BigHitMeter)
-                                CheckBigHit(IsPlayer1Red, false);
-                            
+                            if (sBytes >= 4)
+                            {
+                                if (IsPlayer1Red) {
+                                    animatorP1BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P1 GOT A BIG HIT!";
+                                }
+                                else {
+                                    animatorP2BigHit.SetTrigger("Hit");
+                                    BigHitText.text = "P2 GOT A BIG HIT!";
+                            }
+                            }
+                            else
+                            {
+                                if (IsPlayer1Red)
+                                    BigHitText.text = "P1 got a meh hit!";
+                                else
+                                    BigHitText.text = "P2 got a meh hit!";
+                            }
                         });
 
                         break;
@@ -592,59 +740,7 @@ public class SensorBugTest : MonoBehaviour
 		return (uuid1.ToUpper ().CompareTo (uuid2.ToUpper ()) == 0);
 	}
 
-    void TriggerPlayerDeath(bool IsP1Red, bool Player1GotHit)
-    {
-        if((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
-        {
-            winText.color = playerTwoColor;
-            playerName.color = playerTwoColor;
-            playerName.text = "Christoph Sonnen";
-        }
-        if((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
-        {
-            playerName.color = playerOneColor;
-            winText.color = playerOneColor;
-            playerName.text = "Ali Ghafour";
-        }
-        animatorPlayer.SetTrigger("Win");
-        animatorWins.SetTrigger("Win");
 
-        //if (Player1HealthValue == 0)
-        //{
-        //    if (IsPlayer1Red)
-        //    {
-        //        //Player 2 WINS
-        //        winText.color = playerTwoColor;
-        //        playerName.color = playerTwoColor;
-        //        playerName.text = "Christoph Sonnen";
-        //    }
-        //    else
-        //    {
-        //        //Player 1 Wins
-        //        winText.color = playerOneColor;
-        //        playerName.color = playerOneColor;
-        //        playerName.text = "Ali Ghafour";
-        //    }
-        //}
-        //else
-        //{
-        //    if (IsPlayer1Red)
-        //    {
-        //        //Player 1 WINS
-        //        playerName.color = playerOneColor;
-        //        winText.color = playerOneColor;
-        //        playerName.text = "Ali Ghafour";
-        //    }
-        //    else
-        //    {
-        //        //Player 2 WINS
-        //        winText.color = playerTwoColor;
-        //        playerName.color = playerTwoColor;
-        //        playerName.text = "Christoph Sonnen";
-        //    }
-        //}
-
-    }
 
     void setHealthBar(int amount, bool isP1)
     {
@@ -676,69 +772,9 @@ public class SensorBugTest : MonoBehaviour
         }
     }
 
-    void CheckBigHit(bool IsP1Red, bool Player1GotHit)
+    void checkCombo(bool isP1Red)
     {
-        if((IsP1Red && Player1GotHit)||(!IsP1Red && !Player1GotHit))
-        {
-            animatorP2BigHit.SetTrigger("Hit");
-            BigHitText.text = "P2 GOT A BIG HIT!";
-        }
 
-        if((IsP1Red && !Player1GotHit)||(!IsP1Red && Player1GotHit))
-        {
-            animatorP1BigHit.SetTrigger("Hit");
-            BigHitText.text = "P1 GOT A BIG HIT!";
-        }
     }
 
-    void CheckPlayerCombo(bool IsP1Red, bool Player1GotHit)
-    {
-        if((Player1GotHit && IsP1Red) || (!Player1GotHit && !IsP1Red))
-        {
-            if (IsCombo2On)
-            {
-                if (ComboTimer2 < ComboMeter)
-                {
-                    animatorP2Combo.SetTrigger("Combo");
-                    SensorBugStatusText.text = "Player 2 got a combo!";
-                    ComboTimer2 = 0;
-                }
-                else
-                {
-                    SensorBugStatusText.text = "Reset combo 2 timer";
-                    ComboTimer2 = 0;
-                }
-            }
-            else
-                IsCombo2On = true;
-        }
-
-        if((Player1GotHit && !IsP1Red) || (!Player1GotHit && IsP1Red))
-        {
-            if (IsCombo1On)
-            {
-                if (ComboTimer1 < ComboMeter)
-                {
-                    animatorP1Combo.SetTrigger("Combo");
-                    SensorBugStatusText.text = "Player 1 got a combo!";
-                    ComboTimer1 = 0;
-                }
-                else
-                {
-                    SensorBugStatusText.text = "Reset combo 1 timer";
-                    ComboTimer1 = 0;
-                }
-            }
-            else
-                IsCombo1On = true;
-        }
-    }
-
-    void CheckPlayerColor(string bytes)
-    {
-        if (bytes == "01")
-            IsPlayer1Red = true;
-        else
-            IsPlayer1Red = false;
-    }
 }

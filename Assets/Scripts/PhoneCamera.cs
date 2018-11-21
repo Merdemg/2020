@@ -48,7 +48,7 @@ public class PhoneCamera : MonoBehaviour {
 		float ratio = (float)backCam.width / (float)backCam.height;
 		fit.aspectRatio = ratio;
 
-		float scaleY = backCam.videoVerticallyMirrored ? 1f : 1f;
+		float scaleY = backCam.videoVerticallyMirrored ? -1f : 1f;
 		backGround.rectTransform.localScale = new Vector3 (1f, scaleY,1f);
 
 		int orient = -backCam.videoRotationAngle;

@@ -31,18 +31,18 @@ public class BluetoothDeviceScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		DiscoveredDeviceList = new List<string>();
-		DidUpdateNotificationStateForCharacteristicAction = new Dictionary<string, Dictionary<string, Action<string>>>();
-		DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction = new Dictionary<string, Dictionary<string, Action<string, string>>>();
-		DidUpdateCharacteristicValueAction = new Dictionary<string, Dictionary<string, Action<string, byte[]>>>();
-		DidUpdateCharacteristicValueWithDeviceAddressAction = new Dictionary<string, Dictionary<string, Action<string, string, byte[]>>>();
+		DiscoveredDeviceList = new List<string> ();
+		DidUpdateNotificationStateForCharacteristicAction = new Dictionary<string, Dictionary<string, Action<string>>> ();
+		DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction = new Dictionary<string, Dictionary<string, Action<string, string>>> ();
+		DidUpdateCharacteristicValueAction = new Dictionary<string, Dictionary<string, Action<string, byte[]>>> ();
+		DidUpdateCharacteristicValueWithDeviceAddressAction = new Dictionary<string, Dictionary<string, Action<string, string, byte[]>>> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
 	}
-	
+
 	const string deviceInitializedString = "Initialized";
 	const string deviceDeInitializedString = "DeInitialized";
 	const string deviceErrorString = "Error";
@@ -69,7 +69,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 			string[] parts = message.Split (delim);
 
 			for (int i = 0; i < parts.Length; ++i)
-				BluetoothLEHardwareInterface.Log(string.Format ("Part: {0} - {1}", i, parts[i]));
+				BluetoothLEHardwareInterface.Log (string.Format ("Part: {0} - {1}", i, parts[i]));
 
 			if (message.Length >= deviceInitializedString.Length && message.Substring (0, deviceInitializedString.Length) == deviceInitializedString)
 			{
@@ -79,7 +79,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 			else if (message.Length >= deviceDeInitializedString.Length && message.Substring (0, deviceDeInitializedString.Length) == deviceDeInitializedString)
 			{
 				BluetoothLEHardwareInterface.FinishDeInitialize ();
-				
+
 				if (DeinitializedAction != null)
 					DeinitializedAction ();
 			}
@@ -103,14 +103,14 @@ public class BluetoothDeviceScript : MonoBehaviour
 			}
 			else if (message.Length >= deviceStartedAdvertising.Length && message.Substring (0, deviceStartedAdvertising.Length) == deviceStartedAdvertising)
 			{
-				BluetoothLEHardwareInterface.Log("Started Advertising");
+				BluetoothLEHardwareInterface.Log ("Started Advertising");
 
 				if (StartedAdvertisingAction != null)
 					StartedAdvertisingAction ();
 			}
 			else if (message.Length >= deviceStoppedAdvertising.Length && message.Substring (0, deviceStoppedAdvertising.Length) == deviceStoppedAdvertising)
 			{
-				BluetoothLEHardwareInterface.Log("Stopped Advertising");
+				BluetoothLEHardwareInterface.Log ("Stopped Advertising");
 
 				if (StoppedAdvertisingAction != null)
 					StoppedAdvertisingAction ();
@@ -130,18 +130,18 @@ public class BluetoothDeviceScript : MonoBehaviour
 						if (DiscoveredPeripheralAction != null)
 							DiscoveredPeripheralAction (parts[1], parts[2]);
 					}
-					
+
 					if (parts.Length >= 5 && DiscoveredPeripheralWithAdvertisingInfoAction != null)
 					{
 						// get the rssi from the 4th value
 						int rssi = 0;
 						if (!int.TryParse (parts[3], out rssi))
 							rssi = 0;
-						
+
 						// parse the base 64 encoded data that is the 5th value
-						byte[] bytes = System.Convert.FromBase64String(parts[4]);
-						
-						DiscoveredPeripheralWithAdvertisingInfoAction(parts[1], parts[2], rssi, bytes);
+						byte[] bytes = System.Convert.FromBase64String (parts[4]);
+
+						DiscoveredPeripheralWithAdvertisingInfoAction (parts[1], parts[2], rssi, bytes);
 					}
 				}
 			}
@@ -174,7 +174,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 				if (parts.Length >= 3)
 				{
 					DiscoveredDeviceList.Add (parts[1]);
-					
+
 					if (RetrievedConnectedPeripheralAction != null)
 						RetrievedConnectedPeripheralAction (parts[1], parts[2]);
 				}
@@ -220,7 +220,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 				if (parts.Length >= 3)
 				{
 					if (DidUpdateNotificationStateForCharacteristicAction != null && DidUpdateNotificationStateForCharacteristicAction.ContainsKey (parts[1]))
-				    {
+					{
 						var characteristicAction = DidUpdateNotificationStateForCharacteristicAction[parts[1]];
 						if (characteristicAction != null && characteristicAction.ContainsKey (parts[2]))
 						{
@@ -259,19 +259,19 @@ public class BluetoothDeviceScript : MonoBehaviour
 	{
 		if (base64Data != null)
 		{
-			byte[] bytes = System.Convert.FromBase64String(base64Data);
+			byte[] bytes = System.Convert.FromBase64String (base64Data);
 			if (bytes.Length > 0)
 			{
 				deviceAddress = deviceAddress.ToUpper ();
 				characteristic = characteristic.ToUpper ();
 
-				BluetoothLEHardwareInterface.Log("Device: " + deviceAddress + " Characteristic Received: " + characteristic);
+				BluetoothLEHardwareInterface.Log ("Device: " + deviceAddress + " Characteristic Received: " + characteristic);
 
 				string byteString = "";
 				foreach (byte b in bytes)
-					byteString += string.Format("{0:X2}", b);
+					byteString += string.Format ("{0:X2}", b);
 
-				BluetoothLEHardwareInterface.Log(byteString);
+				BluetoothLEHardwareInterface.Log (byteString);
 
 				if (DidUpdateCharacteristicValueAction != null && DidUpdateCharacteristicValueAction.ContainsKey (deviceAddress))
 				{
@@ -286,7 +286,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 							action (characteristic, bytes);
 					}
 				}
-				
+
 				if (DidUpdateCharacteristicValueWithDeviceAddressAction != null && DidUpdateCharacteristicValueWithDeviceAddressAction.ContainsKey (deviceAddress))
 				{
 					var characteristicAction = DidUpdateCharacteristicValueWithDeviceAddressAction[deviceAddress];
@@ -303,25 +303,34 @@ public class BluetoothDeviceScript : MonoBehaviour
 			}
 		}
 	}
-	
+
 	public void OnPeripheralData (string characteristic, string base64Data)
 	{
 		if (base64Data != null)
 		{
-			byte[] bytes = System.Convert.FromBase64String(base64Data);
+			byte[] bytes = System.Convert.FromBase64String (base64Data);
 			if (bytes.Length > 0)
 			{
-				BluetoothLEHardwareInterface.Log("Peripheral Received: " + characteristic);
-				
+				BluetoothLEHardwareInterface.Log ("Peripheral Received: " + characteristic);
+
 				string byteString = "";
 				foreach (byte b in bytes)
-					byteString += string.Format("{0:X2}", b);
-				
-				BluetoothLEHardwareInterface.Log(byteString);
-				
+					byteString += string.Format ("{0:X2}", b);
+
+				BluetoothLEHardwareInterface.Log (byteString);
+
 				if (PeripheralReceivedWriteDataAction != null)
 					PeripheralReceivedWriteDataAction (characteristic, bytes);
 			}
 		}
 	}
+
+#if UNITY_IOS
+	private void IncludeCoreLocationFramework()
+	{
+		// this method is here because Unity now only includes CoreLocation
+		// if there are methods in the .cs code that access it
+		Input.location.Stop ();
+	}
+#endif
 }

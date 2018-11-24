@@ -7,7 +7,7 @@ public class UIBehaiviour : MonoBehaviour
 {
 	public Text timerText;
 	public float timer;
-	public Text timerShadow;
+
 
 	public Slider hpBar;
 	public int hpMax;
@@ -33,14 +33,14 @@ public class UIBehaiviour : MonoBehaviour
         {
             if (timer < 0)
             {
-                timerShadow.text = "" + 0;
+                
                 timerText.text = "" + 0;
             }
             if (timer > 0)
             {
 
                 timer = timer - Time.deltaTime;
-                timerShadow.text = "" + Mathf.Floor(timer);
+               
                 timerText.text = "" + Mathf.Floor(timer);
 
             }
@@ -51,13 +51,13 @@ public class UIBehaiviour : MonoBehaviour
     public void startTimer()
     {
         hasStarted = true;
+    
     }
 
     public void resetTimer(float time)
     {
         timer = time;
         timer = timer - Time.deltaTime;
-        timerShadow.text = "" + Mathf.Floor(timer);
         timerText.text = "" + Mathf.Floor(timer);
     }
 

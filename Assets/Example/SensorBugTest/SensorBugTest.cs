@@ -96,7 +96,7 @@ public class SensorBugTest : MonoBehaviour
     string GameStateValue;
     //uint PlaytimeSelectedValue;
     string DifficultySelectedValue;
-
+    
     int timerAmount = 0;
 
     uint Player1HealthValue;
@@ -107,6 +107,16 @@ public class SensorBugTest : MonoBehaviour
     float ComboTimer2;
     bool IsCombo1On;
     bool IsCombo2On;
+	public Button startScanButton;
+	float scanTimer = 0.0f;
+   
+    public class DeviceInfo
+	{
+		public string dAddress;
+		public int dSignal;
+	}
+	List<DeviceInfo> deviceList;
+	List<string> checkList = new List<string>();
 
     public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
 
@@ -125,7 +135,7 @@ public class SensorBugTest : MonoBehaviour
         return numLeds;
 
     }
-
+    
     void changeGameState(int stateNum)
     {
         SensorBugStatusText.text = "game state integer: " + stateNum;
@@ -237,7 +247,7 @@ public class SensorBugTest : MonoBehaviour
 		Reset ();
 		BluetoothLEHardwareInterface.Initialize (true, false, () => {
 
-			SetState (States.Scan, 0.1f);
+			SetState (States.Scan, 0.5f);
 
 		}, (error) => {
 
@@ -259,12 +269,14 @@ public class SensorBugTest : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		StartProcess ();
+		//StartProcess ();
+		startScanButton.onClick.AddListener(StartProcess);
 	}
-
+ 
 	// Update is called once per frame
 	void Update ()
 	{
+		//startScanButton.onClick.AddListener(StartProcess);
         
         if (IsCombo2On)
         {
@@ -290,33 +302,72 @@ public class SensorBugTest : MonoBehaviour
                 
                 //Scanning will look for a device that has the device name defined at the top of the code, currently "BLE2020"
 				case States.Scan:
-                        //debugText.text = "I ran";
-                        BluetoothLEHardwareInterface.ScanForPeripheralsWithServices (null, (address, deviceName) => {
+						scanTimer += Time.deltaTime;
+						//debugText.text = "I ran";
+						BigHitText.text = "Scan mode start";
+						int compare;
+						DeviceInfo device;
+						BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null,
+						//{
+							//debugText.text += deviceName;
 
-                        //debugText.text += deviceName;
-                        
 
-						if (deviceName.Contains (DeviceName))
+							//if (deviceName.Contains(DeviceName))
+							//{
+								
+								//BigHitText.text = "Found a 2020 Armor device";
+								//PairingMessage.SetActive (false);
+								//TopPanel.SetActive (true);
+								//BluetoothLEHardwareInterface.StopScan();
+								// found a device with the name we want
+								// this example does not deal with finding more than one
+							//	_deviceAddress = address;
+							//	SetState(States.Connect, 0.5f);
+							//}
+
+						//},
+						(address, deviceName, signalStrength, bytes) => 
 						{
-							SensorBugStatusMessage = "Found a 2020 Armor device";
+							BigHitText.text = "Found a 2020 Armor device";
+                                                 
+							if (deviceName.Contains(DeviceName) && !(checkList.Contains(address)))
+							{
+								BigHitText.text = "in if" + signalStrength.ToString() + " " + address;
+								device = new DeviceInfo();
+								device.dAddress = address;
+								device.dSignal = signalStrength;
+								deviceList.Add(device);
+								checkList.Add(address);
 
-							BluetoothLEHardwareInterface.StopScan ();
+							}
+							else
+							{
+								//foreach (DeviceInfo dI in deviceList){
+								//	BigHitText.text = dI.dAddress + " " + dI.dSignal;
+								//}
+								BigHitText.text = "in else";
+								BluetoothLEHardwareInterface.StopScan();
+								_deviceAddress = deviceList[0].dAddress;
+								compare = deviceList[0].dSignal;
+								for (int i = 0; i < deviceList.Count; i++)
+								{
+									BigHitText.text = "in for loop";
+									if (compare >= deviceList[i].dSignal)
+										_deviceAddress = deviceList[i].dAddress;
+								}
+								BigHitText.text = "after for loop";
+								//_deviceAddress = address;
 
-							//PairingMessage.SetActive (false);
-							//TopPanel.SetActive (true);
 
-							// found a device with the name we want
-							// this example does not deal with finding more than one
-							_deviceAddress = address;
-							SetState (States.Connect, 0.5f);
-						}
-
-					}, null, true);
+								SetState(States.Connect, 0.5f);
+							}                     
+						}, true);
 					break;
 
                 //After a device has been found it will automatically connect with it...
 				case States.Connect:
-					SensorBugStatusMessage = "Connecting to 2020 Armor device...";
+						//SensorBugStatusMessage = "Connecting to 2020 Armor device...";
+						BigHitText.text = "in connect mode";
 
 					BluetoothLEHardwareInterface.ConnectToPeripheral (_deviceAddress, null, null, (address, serviceUUID, characteristicUUID) => {
                         //debugText.text += "";

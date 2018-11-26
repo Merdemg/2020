@@ -13,6 +13,7 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] Slider p2healthBar;
 
 
+
 	//public Text AccelerometerText;
 	public Text SensorBugStatusText;
     public Text BigHitText;
@@ -256,15 +257,20 @@ public class SensorBugTest : MonoBehaviour
 		});
 	}
 
+	// Fixed Update is called once per 0.2 frames
 	// Use this for initialization
 	void Start ()
 	{
 		StartProcess ();
 	}
 
+
+
 	// Update is called once per frame
 	void Update ()
 	{
+
+
         
         if (IsCombo2On)
         {

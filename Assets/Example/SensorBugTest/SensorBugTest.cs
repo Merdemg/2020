@@ -16,6 +16,7 @@ public class SensorBugTest : MonoBehaviour
 	//public Text AccelerometerText;
 	public Text SensorBugStatusText;
     public Text BigHitText;
+	public Text textbox;
 
     //public GameObject PairingMessage;
     //public GameObject TopPanel;
@@ -244,10 +245,13 @@ public class SensorBugTest : MonoBehaviour
     // if device has been found it will try to pair
 	void StartProcess ()
 	{
+		deviceList = new List<DeviceInfo>();
+		deviceList.RemoveRange(0, deviceList.Count);
+		scanTimer = 0.0f;
 		Reset ();
 		BluetoothLEHardwareInterface.Initialize (true, false, () => {
 
-			SetState (States.Scan, 0.5f);
+			SetState (States.Scan, 2.0f);
 
 		}, (error) => {
 
@@ -270,13 +274,14 @@ public class SensorBugTest : MonoBehaviour
 	void Start ()
 	{
 		//StartProcess ();
+
 		startScanButton.onClick.AddListener(StartProcess);
 	}
  
 	// Update is called once per frame
 	void Update ()
 	{
-		//startScanButton.onClick.AddListener(StartProcess);
+		
         
         if (IsCombo2On)
         {
@@ -307,58 +312,32 @@ public class SensorBugTest : MonoBehaviour
 						BigHitText.text = "Scan mode start";
 						int compare;
 						DeviceInfo device;
-						BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null,
-						//{
-							//debugText.text += deviceName;
-
-
-							//if (deviceName.Contains(DeviceName))
-							//{
-								
-								//BigHitText.text = "Found a 2020 Armor device";
-								//PairingMessage.SetActive (false);
-								//TopPanel.SetActive (true);
-								//BluetoothLEHardwareInterface.StopScan();
-								// found a device with the name we want
-								// this example does not deal with finding more than one
-							//	_deviceAddress = address;
-							//	SetState(States.Connect, 0.5f);
-							//}
-
-						//},
-						(address, deviceName, signalStrength, bytes) => 
+						BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null,	(address, deviceName, signalStrength, bytes) => 
 						{
-							BigHitText.text = "Found a 2020 Armor device";
-                                                 
-							if (deviceName.Contains(DeviceName) && !(checkList.Contains(address)))
+							if (deviceName.Contains(DeviceName) && scanTimer <= 1.0f)
 							{
-								BigHitText.text = "in if" + signalStrength.ToString() + " " + address;
+								BigHitText.text = "Found a 2020 Armor device";
 								device = new DeviceInfo();
 								device.dAddress = address;
 								device.dSignal = signalStrength;
-								deviceList.Add(device);
-								checkList.Add(address);
-
+								deviceList.Add(device);             
 							}
 							else
 							{
-								//foreach (DeviceInfo dI in deviceList){
-								//	BigHitText.text = dI.dAddress + " " + dI.dSignal;
-								//}
-								BigHitText.text = "in else";
+								foreach (DeviceInfo dI in deviceList){
+									textbox.text = textbox.text + "\n" + dI.dAddress + " " + dI.dSignal;
+								}
 								BluetoothLEHardwareInterface.StopScan();
 								_deviceAddress = deviceList[0].dAddress;
 								compare = deviceList[0].dSignal;
 								for (int i = 0; i < deviceList.Count; i++)
 								{
-									BigHitText.text = "in for loop";
-									if (compare >= deviceList[i].dSignal)
+									if (compare <= deviceList[i].dSignal)
+									{
 										_deviceAddress = deviceList[i].dAddress;
-								}
-								BigHitText.text = "after for loop";
-								//_deviceAddress = address;
-
-
+										compare = deviceList[i].dSignal;
+									}
+								}                        
 								SetState(States.Connect, 0.5f);
 							}                     
 						}, true);

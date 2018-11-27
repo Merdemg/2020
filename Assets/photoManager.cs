@@ -6,11 +6,15 @@ using UnityEngine.UI;
 
 public class photoManager : MonoBehaviour {
     [SerializeField] RawImage image;
-
+    [SerializeField] RawImage p1image;
+    [SerializeField] RawImage p2image;
 
 	// Use this for initialization
 	void Start () {
-		
+        setImage(0);
+        p1image.texture = image.texture;
+        setImage(1);
+        p2image.texture = image.texture;
 	}
 	
 	// Update is called once per frame
@@ -21,10 +25,11 @@ public class photoManager : MonoBehaviour {
     void setImage(int index)
     {
         List<string> galleryImages = getAllGalleryImagePaths();
-        Texture2D t = new Texture2D(2, 2);
+        Texture2D t = new Texture2D(10, 10);
         //(new WWW(galleryImages[0])).LoadImageIntoTexture(t);
         (new WWW(galleryImages[index])).LoadImageIntoTexture(t);
-        image.texture = t;
+        //image.texture = t;
+        p1image.texture = t;
     }
 
 

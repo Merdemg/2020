@@ -3279,8 +3279,11 @@ MonoBehaviour:
   maxHealth: 24
   p1healthBar: {fileID: 1995967371}
   p2healthBar: {fileID: 591883796}
+  LeftPoint: {fileID: 0}
+  RightPoint: {fileID: 0}
   SensorBugStatusText: {fileID: 0}
   BigHitText: {fileID: 0}
+  textbox: {fileID: 0}
   animatorReady: {fileID: 1644093346}
   animatorStart: {fileID: 784054480}
   animatorP1Combo: {fileID: 1957093317}
@@ -3294,6 +3297,7 @@ MonoBehaviour:
   playerOneColor: {r: 0.76470596, g: 0.14901961, b: 0.1764706, a: 1}
   playerTwoColor: {r: 0.2901961, g: 0.18431373, b: 0.96470594, a: 1}
   TimerValues: 000000000a0000000f000000140000001e0000002d0000003c0000005a00000078000000b4000000ff000000
+  startScanButton: {fileID: 0}
 --- !u!1 &1756461295
 GameObject:
   m_ObjectHideFlags: 0

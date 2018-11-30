@@ -4,22 +4,72 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SensorBugTest : MonoBehaviour
 {
-	public string DeviceName = "2020BLE";
+    GameObject GameScene, UnpairedScene, ProjectorScene, LogoSelectScene, PlayerSelectScene;
+    
+    #region Start and Update
+    void Start()
+    {
+        GameStartAssign();
+        UnpairedSceneButtonsFunction();
+        GameSceneButtonsFuntion();
+    }
+
+    void GameStartAssign()
+    {
+        GameScene = GameObject.FindGameObjectWithTag("GameScene");
+        UnpairedScene = GameObject.FindGameObjectWithTag("UnpairedScene");
+        ProjectorScene = GameObject.FindGameObjectWithTag("ProjectorScene");
+        LogoSelectScene = GameObject.FindGameObjectWithTag("LogoSelectScene");
+        PlayerSelectScene = GameObject.FindGameObjectWithTag("PlayerSelectScene");
+        GameScene.SetActive(false);
+        ProjectorScene.SetActive(false);
+        LogoSelectScene.SetActive(false);
+        PlayerSelectScene.SetActive(false);
+        
+    }
+
+    void Update()
+    {
+        GameUpdate();
+    }
+    #endregion
+
+    #region UnpairedScene
+    [SerializeField] Button UnpairedScene_ConnectToVest;
+    [SerializeField] Button UnpairedScene_ToGameScene;
+
+    void UnpairedSceneButtonsFunction()
+    {
+        UnpairedScene_ConnectToVest.onClick.AddListener(StartProcess);
+        UnpairedScene_ToGameScene.onClick.AddListener(UnpairedToGameScene);
+    }
+
+    void UnpairedToGameScene()
+    {
+        UnpairedScene.SetActive(false);
+        GameScene.SetActive(true);
+        SetState(States.Connect, 0.5f);
+    }
+    #endregion
+
+    #region GameScene
+    public static string DeviceName = "2020BLE";
+    
     [SerializeField] float maxHealth = 24f;
     [SerializeField] Slider p1healthBar;
     [SerializeField] Slider p2healthBar;
+    [SerializeField] TextMeshProUGUI LeftPoint, RightPoint;
 
-
-
+    
 	//public Text AccelerometerText;
 	public Text SensorBugStatusText;
     public Text BigHitText;
 	public Text textbox;
     
-
     //public GameObject PairingMessage;
     //public GameObject TopPanel;
     //public GameObject MiddlePanel;
@@ -77,10 +127,7 @@ public class SensorBugTest : MonoBehaviour
 
     //a time of 0xFF means that the game time selected is INFINITE
     public uint[] TimerValues = {0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
-
-    /// LA LA LA
     
-
 	public Characteristic GameMode = Characteristics[0];
 	public Characteristic GameState = Characteristics[1];
 	public Characteristic PlayTimeSelected = Characteristics[2];
@@ -112,7 +159,7 @@ public class SensorBugTest : MonoBehaviour
     int BigHitMeter = 4;
 	public Button startScanButton;
 	float scanTimer = 0.0f;
-    public Text P1PointText, P2PointText;
+    //public Text P1PointText, P2PointText;
     int P1Points, P2Points;
     float ThreeHitTimer1, ThreeHitTimer2;
     int ThreeHitCountP1, ThreeHitCountP2;
@@ -277,19 +324,21 @@ public class SensorBugTest : MonoBehaviour
 		});
 	}
 
-	// Fixed Update is called once per 0.2 frames
-	// Use this for initialization
-	void Start ()
-	{
-		startScanButton.onClick.AddListener(StartProcess);
-	}
+    // Fixed Update is called once per 0.2 frames
+    // Use this for initialization
+
+    void StartGame()
+    {
+        SetState(States.Connect, 0.5f);
+    }
  
 	// Update is called once per frame
-	void Update ()
+	void GameUpdate ()
 	{
+
+        LeftPoint.text = P1Points.ToString("D8");
+        RightPoint.text = P2Points.ToString("D8");
         
-        P1PointText.text = P1Points.ToString("D8");
-        P2PointText.text = P2Points.ToString("D8");
 
         if (IsCombo2On)
             ComboTimer2 += Time.deltaTime;
@@ -348,7 +397,7 @@ public class SensorBugTest : MonoBehaviour
 										compare = deviceList[i].dSignal;
 									}
 								}                        
-								SetState(States.Connect, 0.5f);
+								//SetState(States.Connect, 0.5f);
 							}                     
 						}, true);
 					break;
@@ -628,6 +677,11 @@ public class SensorBugTest : MonoBehaviour
 		}
 	}
 
+    void GameSceneButtonsFuntion()
+    {
+        //startScanButton.onClick.AddListener(StartProcess);
+    }
+
 	bool IsEqual (string uuid1, string uuid2)
 	{
 		return (uuid1.ToUpper ().CompareTo (uuid2.ToUpper ()) == 0);
@@ -862,4 +916,5 @@ public class SensorBugTest : MonoBehaviour
                 P1Points += 5000;
         }
     }
+    #endregion
 }

@@ -6,9 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Scene_ex01.unity
+    path: Assets/Scenes/Unpaired_screen.unity
+    guid: b909991b26ab02947aff155768b9818d
+  - enabled: 1
+    path: Assets/Scenes/Game_scene.unity
     guid: 170a8d229b8acb24db1751cedfb0a029
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Projector.unity
+    guid: 6ed53ebb1ab504c43867b8e9c89ade6a
+  - enabled: 1
+    path: Assets/Scenes/Logo_Selection.unity
+    guid: d4753dc04a65b134784b560040efc7b2
+  - enabled: 1
+    path: Assets/Scenes/Player_Selection.unity
+    guid: 28b6cbefde2e1a94a976c22a89f88785
   m_configObjects: {}

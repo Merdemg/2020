@@ -1,22 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
+
 public class Screen_Manager : MonoBehaviour {
-	public Slider gameMode;
+    public Slider gameMode;
 
 
 
-	void VideoGameMode (){
-	
-	}
+    public void GameMode() {
+        if (gameMode.value == 1)
+        {
+            ProjectorScene();
+        }
+        else {
+            GameScene();
 
-	void ScoreDisplayMode (){
+        }
+    }
 
-	}
+    public void LogoScreen() {
+        SceneManager.LoadScene("Logo_Selection", LoadSceneMode.Single);
+    }
 
-	void PlayerSelection(){
-		
-	}
+    public void ProjectorScene() {
+        SceneManager.LoadScene("Projector", LoadSceneMode.Single);
+    }
+
+	public void GameScene(){
+        SceneManager.LoadScene("Game_Scene", LoadSceneMode.Single);
+    }
 }

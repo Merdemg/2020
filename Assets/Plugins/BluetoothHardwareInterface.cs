@@ -86,16 +86,10 @@ public class BluetoothLEHardwareInterface
 	private static extern void _iOSBluetoothLEScanForPeripheralsWithServices (string serviceUUIDsString, bool allowDuplicates, bool rssiOnly, bool clearPeripheralList);
 
 	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEScanForBeacons (string proximityUUIDsString);
-
-	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLERetrieveListOfPeripheralsWithServices (string serviceUUIDsString);
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEStopScan ();
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEStopBeaconScan ();
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEConnectToPeripheral (string name);
@@ -119,6 +113,12 @@ public class BluetoothLEHardwareInterface
 	private static extern void _iOSBluetoothLEDisconnectAll ();
 
 #if !UNITY_TVOS
+	[DllImport ("__Internal")]
+	private static extern void _iOSBluetoothLEScanForBeacons (string proximityUUIDsString);
+
+	[DllImport ("__Internal")]
+	private static extern void _iOSBluetoothLEStopBeaconScan ();
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEPeripheralName (string newName);
 
@@ -152,6 +152,7 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
 	static AndroidJavaObject _android = null;
 #endif
+
 
 	private static BluetoothDeviceScript bluetoothDeviceScript;
 
@@ -311,7 +312,7 @@ public class BluetoothLEHardwareInterface
 					proximityUUIDsString = proximityUUIDsString.Substring (0, proximityUUIDsString.Length - 1);
 				}
 
-#if UNITY_IPHONE || UNITY_TVOS
+#if UNITY_IPHONE
 				_iOSBluetoothLEScanForBeacons (proximityUUIDsString);
 #elif UNITY_ANDROID
 				if (_android != null)
@@ -406,7 +407,7 @@ public class BluetoothLEHardwareInterface
 	{
 		if (!Application.isEditor)
 		{
-#if UNITY_IPHONE || UNITY_TVOS
+#if UNITY_IPHONE
 			_iOSBluetoothLEStopBeaconScan ();
 #elif UNITY_ANDROID
 			if (_android != null)

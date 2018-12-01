@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class UIBehaiviour : MonoBehaviour
 {
-	public Text timerText;
+	//public Text timerText;
 	public float timer;
-
+    [SerializeField] TextMeshProUGUI timerText;
 
 	public Slider hpBar;
 	public int hpMax;

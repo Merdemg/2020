@@ -33,4 +33,8 @@ public class Screen_Manager : MonoBehaviour {
 	public void GameScene(){
         SceneManager.LoadScene("Game_Scene", LoadSceneMode.Single);
     }
+    public void PairingScreen()
+    {
+        SceneManager.LoadScene("Unpaired_Scene", LoadSceneMode.Single);
+    }
 }

@@ -1,15 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
 
 public class Screen_Manager : MonoBehaviour {
-    public Slider gameMode;
+    [SerializeField] Slider gameMode;
 
+	//Scenes 
+	[SerializeField] GameObject[] scenes = new GameObject[4];
+	[SerializeField] GameObject mainScreen;
 
+	private void Start(){
+	
+		mainScreen.SetActive (true);
+		for (int i = 0; i < scenes.Length; i++) {
+			scenes [i].SetActive (false);		
+		}
+		scenes [0].SetActive (true);
+
+	
+	}
 
     public void GameMode() {
         if (gameMode.value == 1)
@@ -23,18 +35,42 @@ public class Screen_Manager : MonoBehaviour {
     }
 
     public void LogoScreen() {
-        SceneManager.LoadScene("Logo_Selection", LoadSceneMode.Single);
-    }
+		for (int i = 0; i < scenes.Length; i++) {
+			scenes [i].SetActive (false);		
+		}
+
+		scenes [1].SetActive (true);
+			
+	}
 
     public void ProjectorScene() {
-        SceneManager.LoadScene("Projector", LoadSceneMode.Single);
+
+		for (int i = 0; i < scenes.Length; i++) {
+			scenes [i].SetActive (false);		
+		}
+
+		mainScreen.SetActive (false);
+		scenes [3].SetActive (true);
+        
     }
 
 	public void GameScene(){
-        SceneManager.LoadScene("Game_Scene", LoadSceneMode.Single);
+
+		for (int i = 0; i < scenes.Length; i++) {
+			scenes [i].SetActive (false);		
+		}
+		mainScreen.SetActive (false);
+		scenes [2].SetActive (true);
+        
     }
     public void PairingScreen()
     {
-        SceneManager.LoadScene("Unpaired_Scene", LoadSceneMode.Single);
+		for (int i = 0; i < scenes.Length; i++) {
+			scenes [i].SetActive (false);		
+		}
+
+		scenes [0].SetActive (true);
+
+        
     }
 }

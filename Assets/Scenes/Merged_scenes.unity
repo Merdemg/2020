@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2048,7 +2048,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 133.36047}
+  m_SizeDelta: {x: 0, y: 49.92151}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &276031684
 CanvasRenderer:
@@ -3790,7 +3790,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 30, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4956,11 +4956,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -5856,11 +5856,11 @@ MonoBehaviour:
     lineCount: 2
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -6493,7 +6493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1038146369
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7746,11 +7746,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -8253,7 +8253,7 @@ MonoBehaviour:
 --- !u!1 &1281242890
 GameObject:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1855736531328140, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 1111199160168412, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
@@ -8271,7 +8271,7 @@ GameObject:
 --- !u!224 &1281242891
 RectTransform:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 224709535693583694, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 224154421263686364, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1281242890}
@@ -8291,7 +8291,7 @@ RectTransform:
 --- !u!114 &1281242892
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114730194856703724, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 114149535029174272, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1281242890}
@@ -8344,7 +8344,7 @@ MonoBehaviour:
 --- !u!222 &1281242895
 CanvasRenderer:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 222014460957518868, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 222947286459139120, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1281242890}
@@ -10644,11 +10644,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -11579,7 +11579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1721406651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13498,7 +13498,8 @@ CanvasRenderer:
 --- !u!1 &1959767097
 GameObject:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1451657123655832, guid: 550d0866857b7c747bb58712eb8d31f5,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
   m_Component:
@@ -13516,7 +13517,8 @@ GameObject:
 --- !u!224 &1959767098
 RectTransform:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 224124982417759296, guid: 550d0866857b7c747bb58712eb8d31f5,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1959767097}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
@@ -13529,13 +13531,14 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.000030517578, y: 0}
   m_SizeDelta: {x: 225, y: 85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1959767099
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114001721190250412, guid: 550d0866857b7c747bb58712eb8d31f5,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1959767097}
   m_Enabled: 1
@@ -13547,7 +13550,8 @@ MonoBehaviour:
 --- !u!114 &1959767100
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114605268755951448, guid: 550d0866857b7c747bb58712eb8d31f5,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1959767097}
   m_Enabled: 1
@@ -13574,7 +13578,8 @@ MonoBehaviour:
 --- !u!222 &1959767101
 CanvasRenderer:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 222505350366075768, guid: 550d0866857b7c747bb58712eb8d31f5,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1959767097}
   m_CullTransparentMesh: 0
@@ -13611,7 +13616,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -24, y: 8}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -14664,7 +14669,7 @@ CanvasRenderer:
 --- !u!1 &2115716898
 GameObject:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1324484031497214, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 1525593994648952, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
@@ -14682,7 +14687,7 @@ GameObject:
 --- !u!224 &2115716899
 RectTransform:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 224374079885950414, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 224244430261241366, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2115716898}
@@ -14701,7 +14706,7 @@ RectTransform:
 --- !u!114 &2115716900
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114798798146299858, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 114037698275800296, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2115716898}
@@ -14795,11 +14800,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -14816,7 +14821,7 @@ MonoBehaviour:
 --- !u!222 &2115716901
 CanvasRenderer:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 222671298177546698, guid: 8184c052e7f804240867785d54ab3b8b,
+  m_CorrespondingSourceObject: {fileID: 222396362297643088, guid: 550d0866857b7c747bb58712eb8d31f5,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2115716898}

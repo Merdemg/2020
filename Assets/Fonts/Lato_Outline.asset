@@ -1031,11 +1031,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Ambient: 0
-    - _Bevel: 0.5
+    - _Bevel: 0.531
     - _BevelClamp: 0
-    - _BevelOffset: 0
+    - _BevelOffset: 0.025
     - _BevelRoundness: 0
-    - _BevelWidth: 0
+    - _BevelWidth: 0.025
     - _BumpFace: 0.373
     - _BumpOutline: 0
     - _ColorMask: 15

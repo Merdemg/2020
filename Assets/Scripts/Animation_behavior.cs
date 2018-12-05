@@ -10,9 +10,18 @@ public class Animation_behavior : MonoBehaviour {
 
     [SerializeField] TextMeshProUGUI hitCountText;
     [SerializeField] TextMeshProUGUI dmgPercentText;
-
+    RectTransform menuTransform;
+    
     public int hitCount;
     public int dmgPercent;
+    public float height;
+
+    private void Start()
+    {
+        menuTransform = GetComponent<RectTransform>();
+        height = menuTransform.rect.size.x;
+        print(height);
+    }
 
     public void Combo() {
         hitCountText.text = "" + hitCount;
@@ -27,5 +36,18 @@ public class Animation_behavior : MonoBehaviour {
         bigHitAnim.SetBool("Hit", true);
     }
 
+    public void MenuOpen() {
+         
+        //menuTransform.localScale.y =
+        //menuTransform.rect.size.x = 0;
+        //print(height);
+    }
+
+    public void MenuClose()
+    {
+        
+
+
+    }
 
 }

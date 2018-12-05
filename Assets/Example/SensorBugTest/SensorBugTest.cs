@@ -8,17 +8,17 @@ using TMPro;
 
 public class SensorBugTest : MonoBehaviour
 {
-	public string DeviceName = "2020BLE";
-    
+    public string DeviceName = "2020BLE";
+
     [SerializeField] float maxHealth = 24f;
     [SerializeField] Slider p1healthBar;
     [SerializeField] Slider p2healthBar;
+    [SerializeField] TextMeshProUGUI P1DamagedAmount, P2DamagedAmount;
 
 
-
-	//public Text AccelerometerText;
-	public Text SensorBugStatusText;
-    public Text BigHitText;
+    //public Text AccelerometerText;
+    //public Text SensorBugStatusText;
+    //public Text BigHitText;
 
     //public GameObject PairingMessage;
     //public GameObject TopPanel;
@@ -45,15 +45,15 @@ public class SensorBugTest : MonoBehaviour
 
     int test = 0;
 
-	public class Characteristic
-	{
-		public string ServiceUUID;
-		public string CharacteristicUUID;
-		public bool Found;
-	}
+    public class Characteristic
+    {
+        public string ServiceUUID;
+        public string CharacteristicUUID;
+        public bool Found;
+    }
 
-	public static List<Characteristic> Characteristics = new List<Characteristic>
-	{
+    public static List<Characteristic> Characteristics = new List<Characteristic>
+    {
 
         //GAME SERVICE
         //Game Mode Characteristic 
@@ -76,14 +76,14 @@ public class SensorBugTest : MonoBehaviour
     };
 
     //a time of 0xFF means that the game time selected is INFINITE
-    public uint[] TimerValues = {0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
+    public uint[] TimerValues = { 0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
 
     /// LA LA LA
-    
 
-	public Characteristic GameMode = Characteristics[0];
-	public Characteristic GameState = Characteristics[1];
-	public Characteristic PlayTimeSelected = Characteristics[2];
+
+    public Characteristic GameMode = Characteristics[0];
+    public Characteristic GameState = Characteristics[1];
+    public Characteristic PlayTimeSelected = Characteristics[2];
     public Characteristic DifficultySelected = Characteristics[3];
 
     public Characteristic Player1Health = Characteristics[4];
@@ -112,8 +112,11 @@ public class SensorBugTest : MonoBehaviour
     float ThreeHitTimer1, ThreeHitTimer2;
     int ThreeHitCountP1, ThreeHitCountP2;
     bool ThreeHitCombo1On, ThreeHitCombo2On;
-    [SerializeField] TextMeshProUGUI LeftComboAmountText, RightComboAmountText;
+    [SerializeField] TextMeshProUGUI LeftComboAmountText, RightComboAmountText, ConnectStatus;
+    [SerializeField] GameObject ConnectInfo;
     float scanTimer = 0.0f;
+    float P1HealthLoss, P2HealthLoss;
+
 
     public class DeviceInfo
     {
@@ -122,7 +125,7 @@ public class SensorBugTest : MonoBehaviour
     }
     List<DeviceInfo> deviceList;
 
-    public bool AllCharacteristicsFound { get { return !(Characteristics.Where (c => c.Found == false).Any ()); } }
+    public bool AllCharacteristicsFound { get { return !(Characteristics.Where(c => c.Found == false).Any()); } }
 
     public uint UpdatePlayerHealth(UInt32 health, bool isP1)
     {
@@ -142,7 +145,7 @@ public class SensorBugTest : MonoBehaviour
 
     void changeGameState(int stateNum)
     {
-        SensorBugStatusText.text = "game state integer: " + stateNum;
+        //SensorBugStatusText.text = "game state integer: " + stateNum;
 
         switch (stateNum)
         {
@@ -175,119 +178,119 @@ public class SensorBugTest : MonoBehaviour
         GetComponent<UIBehaiviour>().resetTimer(amount);
     }
 
-    
+
     //checks if the found service and characterstic matches one of the ones in the array?
-	public Characteristic GetCharacteristic (string serviceUUID, string characteristicsUUID)
-	{
+    public Characteristic GetCharacteristic(string serviceUUID, string characteristicsUUID)
+    {
         //debugText.text += " " + serviceUUID + " ///--/// " +characteristicsUUID;
-		return Characteristics.Where (c => IsEqual (serviceUUID, c.ServiceUUID) && IsEqual (characteristicsUUID, c.CharacteristicUUID)).FirstOrDefault ();
-	}
+        return Characteristics.Where(c => IsEqual(serviceUUID, c.ServiceUUID) && IsEqual(characteristicsUUID, c.CharacteristicUUID)).FirstOrDefault();
+    }
 
-	enum States
-	{
-		None,
-		Scan,
-		Connect,
-		ReadPairingStatus,
-		WaitPairingStatus,
-		ConfigureAccelerometer,
-		SubscribeToAccelerometer,
-		SubscribingToAccelerometer,
-		Disconnect,
-		Disconnecting,
-	}
+    enum States
+    {
+        None,
+        Scan,
+        Connect,
+        ReadPairingStatus,
+        WaitPairingStatus,
+        ConfigureAccelerometer,
+        SubscribeToAccelerometer,
+        SubscribingToAccelerometer,
+        Disconnect,
+        Disconnecting,
+    }
 
-	private bool _connected = false;
-	private float _timeout = 0f;
-	private States _state = States.None;
-	private string _deviceAddress;
-	private bool _pairing = false;
+    private bool _connected = false;
+    private float _timeout = 0f;
+    private States _state = States.None;
+    private string _deviceAddress;
+    private bool _pairing = false;
 
-	private byte[] _accelerometerConfigureBytes = new byte[] { 0x01, 0x01 };
+    private byte[] _accelerometerConfigureBytes = new byte[] { 0x01, 0x01 };
 
-	string SensorBugStatusMessage
-	{
-		set
-		{
-			if (!string.IsNullOrEmpty(value))
-				BluetoothLEHardwareInterface.Log (value);
-			if (SensorBugStatusText != null)
-				SensorBugStatusText.text = value;
-		}
-	}
+    string SensorBugStatusMessage
+    {
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+                BluetoothLEHardwareInterface.Log(value);
+            //if (SensorBugStatusText != null)
+                //SensorBugStatusText.text = value;
+        }
+    }
 
     //Code for re-pairing with a device...
-	void Reset ()
-	{
-		_connected = false;
-		_timeout = 0f;
-		_state = States.None;
-		_deviceAddress = null;
+    void Reset()
+    {
+        _connected = false;
+        _timeout = 0f;
+        _state = States.None;
+        _deviceAddress = null;
 
-		if (!_pairing)
-		{
-			//PairingMessage.SetActive (true);
-			//TopPanel.SetActive (false);
-			//MiddlePanel.SetActive (false);
+        if (!_pairing)
+        {
+            //PairingMessage.SetActive (true);
+            //TopPanel.SetActive (false);
+            //MiddlePanel.SetActive (false);
 
-			SensorBugStatusMessage = "";
-		}
+            SensorBugStatusMessage = "";
+        }
 
-		_pairing = false;
-	}
-    
+        _pairing = false;
+    }
+
     //Changes state of the code
-	void SetState (States newState, float timeout)
-	{
-		_state = newState;
-		_timeout = timeout;
-	}
+    void SetState(States newState, float timeout)
+    {
+        _state = newState;
+        _timeout = timeout;
+    }
 
     //Initialization code?
     // Sets the state to scan mode with a timeout of 0.1f
     // if device has been found it will try to pair
-	public void StartConnect ()
-	{
+    public void StartConnect()
+    {
         deviceList = new List<DeviceInfo>();
         deviceList.RemoveRange(0, deviceList.Count);
         scanTimer = 0.0f;
-        Reset ();
-		BluetoothLEHardwareInterface.Initialize (true, false, () => {
+        Reset();
+        BluetoothLEHardwareInterface.Initialize(true, false, () => {
 
-			SetState (States.Scan, 1.0f);
+            SetState(States.Scan, 1.0f);
 
-		}, (error) => {
+        }, (error) => {
 
-			if (_state == States.SubscribingToAccelerometer)
-			{
-				_pairing = true;
-				SensorBugStatusMessage = "Pairing to 2020 device";
+            if (_state == States.SubscribingToAccelerometer)
+            {
+                _pairing = true;
+                SensorBugStatusMessage = "Pairing to 2020 device";
 
-				// if we get an error when trying to subscribe to the SensorBug it is
-				// most likely because we just paired with it. Right after pairing you
-				// have to disconnect and reconnect before being able to subscribe.
-				SetState (States.Disconnect, 0.1f);
-			}
+                // if we get an error when trying to subscribe to the SensorBug it is
+                // most likely because we just paired with it. Right after pairing you
+                // have to disconnect and reconnect before being able to subscribe.
+                SetState(States.Disconnect, 0.1f);
+            }
 
-			BluetoothLEHardwareInterface.Log ("Error: " + error);
-		});
-	}
+            BluetoothLEHardwareInterface.Log("Error: " + error);
+        });
+    }
 
-	// Fixed Update is called once per 0.2 frames
-	// Use this for initialization
-	void Start ()
-	{
+    // Fixed Update is called once per 0.2 frames
+    // Use this for initialization
+    void Start()
+    {
         //StartConnect ();
-	}
+    }
 
     public void AfterConnected()
     {
         SetState(States.Connect, 0.5f);
     }
 
-	// Update is called once per frame
-	void Update ()
-	{
+    // Update is called once per frame
+    void Update()
+    {
         LeftPoint.text = P1Points.ToString("D8");
         RightPoint.text = P2Points.ToString("D8");
         LeftComboAmountText.text = ThreeHitCountP1.ToString();
@@ -304,29 +307,29 @@ public class SensorBugTest : MonoBehaviour
             ThreeHitTimer2 += Time.deltaTime;
 
         if (_timeout > 0f)
-		{
-			_timeout -= Time.deltaTime;
-			if (_timeout <= 0f)
-			{
-				_timeout = 0f;
+        {
+            _timeout -= Time.deltaTime;
+            if (_timeout <= 0f)
+            {
+                _timeout = 0f;
 
-				switch (_state)
-				{
-				case States.None:
-					break;
-                
-                //Scanning will look for a device that has the device name defined at the top of the code, currently "BLE2020"
-				case States.Scan:
+                switch (_state)
+                {
+                    case States.None:
+                        break;
+
+                    //Scanning will look for a device that has the device name defined at the top of the code, currently "BLE2020"
+                    case States.Scan:
                         scanTimer += Time.deltaTime;
                         //debugText.text = "I ran";
-                        BigHitText.text = "Scan mode start";
+                        //BigHitText.text = "Scan mode start";
                         int compare;
                         DeviceInfo device;
                         BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null, (address, deviceName, signalStrength, bytes) =>
                         {
                             if (deviceName.Contains(DeviceName) && scanTimer <= 0.5f)
                             {
-                                BigHitText.text = "Found a 2020 Armor device";
+                                //BigHitText.text = "Found a 2020 Armor device";
                                 device = new DeviceInfo();
                                 device.dAddress = address;
                                 device.dSignal = signalStrength;
@@ -336,7 +339,7 @@ public class SensorBugTest : MonoBehaviour
                             {
                                 foreach (DeviceInfo dI in deviceList)
                                 {
-                                    //textbox.text = textbox.text + "\n" + dI.dAddress + " " + dI.dSignal;
+                                    //BigHitText.text = BigHitText.text + "\n" + dI.dAddress + " " + dI.dSignal;
                                 }
                                 BluetoothLEHardwareInterface.StopScan();
                                 _deviceAddress = deviceList[0].dAddress;
@@ -349,76 +352,77 @@ public class SensorBugTest : MonoBehaviour
                                         compare = deviceList[i].dSignal;
                                     }
                                 }
-                                //SetState(States.Connect, 0.5f);
+                                ConnectStatus.text = "Connecting...";
+                                SetState(States.Connect, 0.5f);
                             }
                         }, true);
                         break;
 
-                //After a device has been found it will automatically connect with it...
-				case States.Connect:
-					SensorBugStatusMessage = "Connecting to 2020 Armor device...";
+                    //After a device has been found it will automatically connect with it...
+                    case States.Connect:
+                        SensorBugStatusMessage = "Connecting to 2020 Armor device...";
 
-					BluetoothLEHardwareInterface.ConnectToPeripheral (_deviceAddress, null, null, (address, serviceUUID, characteristicUUID) => {
-                        //debugText.text += "";
-                        //Checks first collected service and characteristic????
-						var characteristic = GetCharacteristic (serviceUUID, characteristicUUID);
-						if (characteristic != null)
-                        {
-                            SensorBugStatusMessage = "Checking the characteristics of 2020 Armor device...";
-
-
-                            //debugText.text += characteristicUUID + " ";
-                            //if first characteristic is found, it will try and find all of them and then compare... and then sets the connection
-                            //status to true...? moesv on to reading pairiring status...?
-							BluetoothLEHardwareInterface.Log (string.Format ("Found {0}, {1}", serviceUUID, characteristicUUID));
-
-							characteristic.Found = true;
-
-							if (AllCharacteristicsFound)
-							{
-                                //debugText.text += " CONNECTED";
-								_connected = true;
-
-                                // SetState (States.ReadPairingStatus, 3f);
-                                SetState(States.SubscribeToAccelerometer, 3f);
-							}
-						}
-					}, (disconnectAddress) => {
-						SensorBugStatusMessage = "Disconnected from SensorBug";
-						Reset ();
-						SetState (States.Scan, 1f);
-					});
-					break;
+                        BluetoothLEHardwareInterface.ConnectToPeripheral(_deviceAddress, null, null, (address, serviceUUID, characteristicUUID) => {
+                            //debugText.text += "";
+                            //Checks first collected service and characteristic????
+                            var characteristic = GetCharacteristic(serviceUUID, characteristicUUID);
+                            if (characteristic != null)
+                            {
+                                SensorBugStatusMessage = "Checking the characteristics of 2020 Armor device...";
 
 
-                //Seems that you cannot subscribe to characteristics immediately after each other, needs some time in between! Currently using 1000ms, which maybe is long... also using delay, which maybe is not good... 
-                //Consider how to improve this in the future?
+                                //debugText.text += characteristicUUID + " ";
+                                //if first characteristic is found, it will try and find all of them and then compare... and then sets the connection
+                                //status to true...? moesv on to reading pairiring status...?
+                                BluetoothLEHardwareInterface.Log(string.Format("Found {0}, {1}", serviceUUID, characteristicUUID));
 
-				case States.SubscribeToAccelerometer:
-					SetState (States.SubscribingToAccelerometer, 10f);
-					SensorBugStatusMessage = "Subscribing to Game Mode...";
+                                characteristic.Found = true;
+
+                                if (AllCharacteristicsFound)
+                                {
+                                    //debugText.text += " CONNECTED";
+                                    _connected = true;
+
+                                    // SetState (States.ReadPairingStatus, 3f);
+                                    SetState(States.SubscribeToAccelerometer, 3f);
+                                }
+                            }
+                        }, (disconnectAddress) => {
+                            SensorBugStatusMessage = "Disconnected from SensorBug";
+                            Reset();
+                            SetState(States.Scan, 1f);
+                        });
+                        break;
+
+
+                    //Seems that you cannot subscribe to characteristics immediately after each other, needs some time in between! Currently using 1000ms, which maybe is long... also using delay, which maybe is not good... 
+                    //Consider how to improve this in the future?
+
+                    case States.SubscribeToAccelerometer:
+                        SetState(States.SubscribingToAccelerometer, 10f);
+                        SensorBugStatusMessage = "Subscribing to Game Mode...";
                         //MAKE SURE THAT THIS IS ONLY HAPPENING ONCE...
-                    _state = States.None;
-                    test++;
+                        _state = States.None;
+                        test++;
                         //debugText.text = " " +  test;
 
                         //debugText.text = " Subscribing to playtime...";
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, PlayTimeSelected.ServiceUUID,
                         PlayTimeSelected.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
-                        //test++;
+                            //test++;
 
 
 
 
-                        _state = States.None;
+                            _state = States.None;
                             //MiddlePanel.SetActive(true);
-                        //debugText.text = 
+                            //debugText.text = 
 
-                         //PlaytimeSelectedValue = BitConverter.ToString(bytes);
+                            //PlaytimeSelectedValue = BitConverter.ToString(bytes);
 
-                        // PlaytimeSelectedValue = TimerValues[bytes[0]];
+                            // PlaytimeSelectedValue = TimerValues[bytes[0]];
                             setTimerAmount((int)TimerValues[bytes[0]]);
-                        //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
+                            //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                         });
 
@@ -426,20 +430,20 @@ public class SensorBugTest : MonoBehaviour
 
                         Thread.Sleep(1000);
 
-                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress (_deviceAddress, GameState.ServiceUUID, 
+                        BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, GameState.ServiceUUID,
                         GameState.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
                             //test++;
 
-                            SensorBugStatusText.text = "hi ";
-                        _state = States.None;
+                            //SensorBugStatusText.text = "hi ";
+                            _state = States.None;
 
 
 
-                          
 
-						//GameStateValue = BitConverter.ToString (bytes);
-                           // var sBytes = BitConverter.ToUInt32(bytes, 0);
-                           // SensorBugStatusText.text = sBytes + " is the game state";
+
+                            //GameStateValue = BitConverter.ToString (bytes);
+                            // var sBytes = BitConverter.ToUInt32(bytes, 0);
+                            // SensorBugStatusText.text = sBytes + " is the game state";
                             changeGameState(bytes[0]);
 
 
@@ -471,7 +475,7 @@ public class SensorBugTest : MonoBehaviour
 
                         Thread.Sleep(1000);
 
-                        
+
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Health.ServiceUUID,
                         Player1Health.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -479,15 +483,15 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                           // MiddlePanel.SetActive(true);
+                            // MiddlePanel.SetActive(true);
                             //debugText.text = 
 
                             if (BitConverter.IsLittleEndian)
                                 Array.Reverse(bytes);
 
-                            var sBytes = BitConverter.ToUInt32(bytes,0);
+                            var sBytes = BitConverter.ToUInt32(bytes, 0);
 
-                            
+                            CheckHealthLoss(IsPlayer1Red, true, sBytes);
 
                             Player1HealthValue = UpdatePlayerHealth(sBytes, true);
 
@@ -498,78 +502,21 @@ public class SensorBugTest : MonoBehaviour
                                 TriggerPlayerDeath(IsPlayer1Red, true);
                             }
 
-                            CheckPlayerCombo(IsPlayer1Red, true);
+                            CheckPlayerCombo(IsPlayer1Red, true, sBytes);
 
-                            //if(Player1HealthValue == 0)
-                            //{
-                            //    if(IsPlayer1Red){
-                            //        //Player 2 WINS
-                            //        winText.color = playerTwoColor;
-                            //        playerName.color = playerTwoColor;
-                            //        playerName.text = "Christoph Sonnen";
-                            //        animatorPlayer.SetTrigger("Win");
-                            //        animatorWins.SetTrigger("Win");
-                            //    }
-                            //    else
-                            //    {
-                            //        //Player 1 Wins
-                            //        winText.color = playerOneColor;
-                            //        playerName.color = playerOneColor;
-                            //        playerName.text = "Ali Ghafour";
-                            //        animatorPlayer.SetTrigger("Win");
-                            //        animatorWins.SetTrigger("Win");
+                            
 
-                            //    }
-                            //}
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //  debugText.text = "value of Player1Health:" + Player1HealthValue;
 
-                        //    if (IsPlayer1Red)
-                        //    {
-                        //        if (IsCombo2On)
-                        //        {
-                        //            if (ComboTimer2 < 2)
-                        //            {
-                        //                animatorP2Combo.SetTrigger("Combo");
-                        //                SensorBugStatusText.text = "Player 2 got a combo!";
-                        //                ComboTimer2 = 0;
-                        //            }
-                        //            else
-                        //            {
-                        //                SensorBugStatusText.text = "Reset combo 2 timer";
-                        //                ComboTimer2 = 0;
-                        //            }
-                        //        }
-                        //        else
-                        //            IsCombo2On = true;
-                        //    }
-                        //    else
-                        //    {
-                        //        if (IsCombo1On)
-                        //        {
-                        //            if (ComboTimer1 < 2)
-                        //            {
-                        //                animatorP1Combo.SetTrigger("Combo");
-                        //                SensorBugStatusText.text = "Player 1 got a combo!";
-                        //                ComboTimer1 = 0;
-                        //            }
-                        //            else
-                        //            {
-                        //                SensorBugStatusText.text = "Reset combo 1 timer";
-                        //                ComboTimer1 = 0;
-                        //            }
-                        //        }
-                        //        else
-                        //            IsCombo1On = true;
-                        //    }
 
                         });
 
                         Thread.Sleep(1000);
 
-                        
+
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player2Health.ServiceUUID,
                         Player2Health.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -577,7 +524,7 @@ public class SensorBugTest : MonoBehaviour
 
 
                             _state = States.None;
-                          //  MiddlePanel.SetActive(true);
+                            //  MiddlePanel.SetActive(true);
                             //debugText.text = 
 
                             if (BitConverter.IsLittleEndian)
@@ -585,6 +532,7 @@ public class SensorBugTest : MonoBehaviour
 
                             var sBytes = BitConverter.ToUInt32(bytes, 0);
 
+                            CheckHealthLoss(IsPlayer1Red, false, sBytes);
 
                             Player2HealthValue = UpdatePlayerHealth(sBytes, false);
                             //check if player is dead
@@ -594,74 +542,15 @@ public class SensorBugTest : MonoBehaviour
                                 TriggerPlayerDeath(IsPlayer1Red, false);
                             }
 
-                            CheckPlayerCombo(IsPlayer1Red, false);
+                            CheckPlayerCombo(IsPlayer1Red, false, sBytes);
 
-                            //if (Player2HealthValue == 0)
-                            //{
-                            //    if (IsPlayer1Red)
-                            //    {
-                            //        //Player 1 WINS
-                            //        playerName.color = playerOneColor;
-                            //        winText.color = playerOneColor;
-                            //        playerName.text = "Ali Ghafour";
-                            //        animatorPlayer.SetTrigger("Win");
-                            //        animatorWins.SetTrigger("Win");
-                            //    }
-                            //    else
-                            //    {
-                            //        //Player 2 WINS
-                            //        winText.color = playerTwoColor;
-                            //        playerName.color = playerTwoColor;
-                            //        playerName.text = "Christoph Sonnen";
-                            //        animatorPlayer.SetTrigger("Win");
-                            //        animatorWins.SetTrigger("Win");
+                            
 
-                            //    }
-                            //}
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             // debugText.text = "value of Player2Health:" + Player2HealthValue;
 
-                            //Test player 2 got hit
-                            //if (IsPlayer1Red)
-                            //{
-                            //    if (IsCombo1On)
-                            //    {
-                            //        if (ComboTimer1 < 2)
-                            //        {
-                            //            animatorP1Combo.SetTrigger("Combo");
-                            //            SensorBugStatusText.text = "Player 1 got a combo!";
-                            //            ComboTimer1 = 0;
-                            //        }
-                            //        else
-                            //        {
-                            //            SensorBugStatusText.text = "Reset combo 1 timer";
-                            //            ComboTimer1 = 0;
-                            //        }
-                            //    }
-                            //    else
-                            //        IsCombo1On = true;
-                            //}
-                            //else
-                            //{
-                            //    if (IsCombo2On)
-                            //    {
-                            //        if (ComboTimer2 < 2)
-                            //        {
-                            //            animatorP2Combo.SetTrigger("Combo");
-                            //            SensorBugStatusText.text = "Player 2 got a combo!";
-                            //            ComboTimer2 = 0;
-                            //        }
-                            //        else
-                            //        {
-                            //            SensorBugStatusText.text = "Reset combo 2 timer";
-                            //            ComboTimer2 = 0;
-                            //        }
-                            //    }
-                            //    else
-                            //        IsCombo2On = true;
-                            //}
                         });
 
 
@@ -674,7 +563,7 @@ public class SensorBugTest : MonoBehaviour
 
                             _state = States.None;
 
-                            
+
                             // if (BitConverter.IsLittleEndian)
                             //   Array.Reverse(bytes);
 
@@ -685,10 +574,7 @@ public class SensorBugTest : MonoBehaviour
                             //SensorBugStatusText.text = "P1 Color: " + sBytes;
 
                             CheckPlayerColor(sBytes);
-                            //if (sBytes == "01")
-                            //    IsPlayer1Red = true;
-                            //else
-                            //    IsPlayer1Red = false;
+
                         });
 
                         //Test Big Hit
@@ -709,25 +595,7 @@ public class SensorBugTest : MonoBehaviour
                                 CheckBigHit(IsPlayer1Red, true);
 
                             CheckPlayerPoints(IsPlayer1Red, true, sBytes);
-                            //if (sBytes >= 4)
-                            //{
-                            //    if (IsPlayer1Red)
-                            //    {
-                            //        animatorP2BigHit.SetTrigger("Hit");
-                            //        BigHitText.text = "P2 GOT A BIG HIT!";
-                            //    }
-                            //    else {
-                            //        animatorP1BigHit.SetTrigger("Hit");
-                            //    BigHitText.text = "P1 GOT A BIG HIT!";
-                            //}
-                            //}
-                            //else
-                            //{
-                            //    if (IsPlayer1Red)
-                            //        BigHitText.text = "P2 got a meh hit!";
-                            //    else
-                            //        BigHitText.text = "P1 got a meh hit!";
-                            //}
+
                         });
 
                         Thread.Sleep(1000);
@@ -738,8 +606,8 @@ public class SensorBugTest : MonoBehaviour
                             _state = States.None;
 
 
-                             //if (BitConverter.IsLittleEndian)
-                             //  Array.Reverse(bytes);
+                            //if (BitConverter.IsLittleEndian)
+                            //  Array.Reverse(bytes);
 
                             var sBytes = bytes[0];
 
@@ -747,60 +615,44 @@ public class SensorBugTest : MonoBehaviour
                                 CheckBigHit(IsPlayer1Red, false);
 
                             CheckPlayerPoints(IsPlayer1Red, false, sBytes);
-                            //if (sBytes >= 4)
-                            //{
-                            //    if (IsPlayer1Red) {
-                            //        animatorP1BigHit.SetTrigger("Hit");
-                            //        BigHitText.text = "P1 GOT A BIG HIT!";
-                            //    }
-                            //    else {
-                            //        animatorP2BigHit.SetTrigger("Hit");
-                            //        BigHitText.text = "P2 GOT A BIG HIT!";
-                            //}
-                            //}
-                            //else
-                            //{
-                            //    if (IsPlayer1Red)
-                            //        BigHitText.text = "P1 got a meh hit!";
-                            //    else
-                            //        BigHitText.text = "P2 got a meh hit!";
-                            //}
-                        });
 
+                        });
+                        //REMOVE CONNECT INFO
+                        ConnectInfo.SetActive(false);
                         break;
 
 
 
-				case States.Disconnect:
-					SetState (States.Disconnecting, 5f);
-					if (_connected)
-					{
-						BluetoothLEHardwareInterface.DisconnectPeripheral (_deviceAddress, (address) => {
-							// since we have a callback for disconnect in the connect method above, we don't
-							// need to process the callback here.
-						});
-					}
-					else
-					{
-						Reset ();
-						SetState (States.Scan, 1f);
-					}
-					break;
+                    case States.Disconnect:
+                        SetState(States.Disconnecting, 5f);
+                        if (_connected)
+                        {
+                            BluetoothLEHardwareInterface.DisconnectPeripheral(_deviceAddress, (address) => {
+                                // since we have a callback for disconnect in the connect method above, we don't
+                                // need to process the callback here.
+                            });
+                        }
+                        else
+                        {
+                            Reset();
+                            SetState(States.Scan, 1f);
+                        }
+                        break;
 
-				case States.Disconnecting:
-					// if we got here we timed out disconnecting, so just go to disconnected state
-					Reset ();
-					SetState (States.Scan, 1f);
-					break;
-				}
-			}
-		}
-	}
+                    case States.Disconnecting:
+                        // if we got here we timed out disconnecting, so just go to disconnected state
+                        Reset();
+                        SetState(States.Scan, 1f);
+                        break;
+                }
+            }
+        }
+    }
 
-	bool IsEqual (string uuid1, string uuid2)
-	{
-		return (uuid1.ToUpper ().CompareTo (uuid2.ToUpper ()) == 0);
-	}
+    bool IsEqual(string uuid1, string uuid2)
+    {
+        return (uuid1.ToUpper().CompareTo(uuid2.ToUpper()) == 0);
+    }
 
 
 
@@ -858,17 +710,17 @@ public class SensorBugTest : MonoBehaviour
         if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
         {
             animatorP2BigHit.SetTrigger("Hit");
-            BigHitText.text = "P2 GOT A BIG HIT!";
+            //BigHitText.text = "P2 GOT A BIG HIT!";
         }
 
         if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
         {
             animatorP1BigHit.SetTrigger("Hit");
-            BigHitText.text = "P1 GOT A BIG HIT!";
+            //BigHitText.text = "P1 GOT A BIG HIT!";
         }
     }
 
-    void CheckPlayerCombo(bool IsP1Red, bool Player1GotHit)
+    void CheckPlayerCombo(bool IsP1Red, bool Player1GotHit, uint bytes)
     {
         if ((Player1GotHit && IsP1Red) || (!Player1GotHit && !IsP1Red))
         {
@@ -877,7 +729,8 @@ public class SensorBugTest : MonoBehaviour
                 if (ComboTimer2 < 2)
                 {
                     animatorP2Combo.SetTrigger("Combo");
-                    SensorBugStatusText.text = "Player 2 got a combo!";
+                    P1HealthLoss += Mathf.Round(bytes / 24 * 100);
+                    //SensorBugStatusText.text = "Player 2 got a combo!";
                     if (ComboTimer2 > 0.0f && ComboTimer2 <= 1.0f)
                     {
                         P2Points += 5000;
@@ -890,13 +743,14 @@ public class SensorBugTest : MonoBehaviour
                 }
                 else
                 {
-                    SensorBugStatusText.text = "Reset combo 2 timer";
+                    //SensorBugStatusText.text = "Reset combo 2 timer";
                     ComboTimer2 = 0;
                 }
             }
             else
             {
                 IsCombo2On = true;
+                P2HealthLoss = Mathf.Round(bytes / 24 * 100);
             }
 
             if (ThreeHitCombo2On)
@@ -922,6 +776,7 @@ public class SensorBugTest : MonoBehaviour
                 ThreeHitCombo2On = true;
                 ThreeHitCountP2 = 1;
             }
+            P1DamagedAmount.text = P1HealthLoss + "%";
         }
 
         if ((Player1GotHit && !IsP1Red) || (!Player1GotHit && IsP1Red))
@@ -931,7 +786,8 @@ public class SensorBugTest : MonoBehaviour
                 if (ComboTimer1 < 2)
                 {
                     animatorP1Combo.SetTrigger("Combo");
-                    SensorBugStatusText.text = "Player 1 got a combo!";
+                    P2HealthLoss += Mathf.Round(bytes / 24 * 100);
+                    //SensorBugStatusText.text = "Player 1 got a combo!";
                     if (ComboTimer1 > 0.0f && ComboTimer1 <= 1.0f)
                     {
                         P1Points += 5000;
@@ -944,18 +800,22 @@ public class SensorBugTest : MonoBehaviour
                 }
                 else
                 {
-                    SensorBugStatusText.text = "Reset combo 1 timer";
+                    //SensorBugStatusText.text = "Reset combo 1 timer";
                     ComboTimer1 = 0;
                 }
             }
             else
+            {
                 IsCombo1On = true;
+                P2HealthLoss = Mathf.Round(bytes / 24 * 100);
+            }
 
             if (ThreeHitCombo1On)
             {
                 if (ThreeHitTimer1 <= 3.0f)
                 {
                     ThreeHitCountP1 += 1;
+                    
                     if (ThreeHitCountP1 >= 3)
                     {
                         P1Points += 10000;
@@ -967,13 +827,17 @@ public class SensorBugTest : MonoBehaviour
                 {
                     ThreeHitCountP1 = 1;
                     ThreeHitTimer1 = 0.0f;
+                    
                 }
             }
             else
             {
                 ThreeHitCombo1On = true;
                 ThreeHitCountP1 = 1;
+                
             }
+            
+            P2DamagedAmount.text = P2HealthLoss + "%";
         }
     }
 
@@ -1035,6 +899,21 @@ public class SensorBugTest : MonoBehaviour
             if (ComboTimer2 > 0 && ComboTimer2 <= 1.0f)
                 P1Points += 5000;
         }
+    }
+
+    void CheckHealthLoss(bool IsP1Red, bool Player1GotHit, uint bytes)
+    {
+        //if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
+        //{
+        //    P1HealthLoss = Mathf.Round(bytes / 24);
+        //    P1DamagedAmount.text = P1HealthLoss + "%";
+        //}
+
+        //if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
+        //{
+        //    P2HealthLoss = Mathf.Round(bytes / 24);
+        //    P2DamagedAmount.text = P2HealthLoss + "%";
+        //}
     }
 
 }

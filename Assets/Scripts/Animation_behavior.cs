@@ -14,9 +14,17 @@ public class Animation_behavior : MonoBehaviour {
     public int hitCount;
     public int dmgPercent;
 
-    void Combo() {
+    public void Combo() {
+        hitCountText.text = "" + hitCount;
+        dmgPercentText.text = "" + dmgPercent;
+        comboAnim.SetBool("Combo", true);
+    }
 
 
+
+    public void BigHit() {
+        dmgPercentText.text = "" + dmgPercent;
+        bigHitAnim.SetBool("Hit", true);
     }
 
 

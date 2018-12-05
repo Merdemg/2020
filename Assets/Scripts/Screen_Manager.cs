@@ -9,7 +9,7 @@ public class Screen_Manager : MonoBehaviour {
     [SerializeField] Slider gameMode;
 
 	//Scenes 
-	[SerializeField] GameObject[] scenes = new GameObject[4];
+	[SerializeField] GameObject[] scenes = new GameObject[5];
 	[SerializeField] GameObject mainScreen;
 
 	private void Start(){
@@ -73,4 +73,9 @@ public class Screen_Manager : MonoBehaviour {
 
         
     }
+    public void ConnectingScreen() {
+        scenes[4].SetActive(true);
+
+    }
+
 }

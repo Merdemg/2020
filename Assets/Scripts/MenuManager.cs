@@ -96,28 +96,30 @@ public class MenuManager : MonoBehaviour
     {
         getName(name, true);
         p1inputf.gameObject.SetActive(false);
-        dropdownP1.value = names.Count -1;
+        dropdownP1.value = names.Count -2;
     }
 
     public void P2getName(string name)
     {
         getName(name, false);
         p2inputf.gameObject.SetActive(false);
-        dropdownP2.value = names.Count -1;
+        dropdownP2.value = names.Count -2;
     }
 
     void getName(string newName, bool isP1)
     {
         string s = "name" + names.Count;
         PlayerPrefs.SetString(s, newName);
+        names.Remove("NEW");
         names.Add(newName);
+        names.Add("NEW");
 
         dropdownP1.ClearOptions();
         dropdownP1.AddOptions(names);
         dropdownP2.ClearOptions();
         dropdownP2.AddOptions(names);
 
-        p1inputf.gameObject.SetActive(false);
-        p2inputf.gameObject.SetActive(false);
+        p1inputf.gameObject.active = false;
+        p2inputf.gameObject.active = false;
     }
 }

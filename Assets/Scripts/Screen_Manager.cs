@@ -9,7 +9,7 @@ public class Screen_Manager : MonoBehaviour {
     [SerializeField] Slider gameMode;
 
 	//Scenes 
-	[SerializeField] GameObject[] scenes = new GameObject[5];
+	[SerializeField] GameObject[] scenes = new GameObject[6];
 	[SerializeField] GameObject mainScreen;
 
 	private void Start(){
@@ -23,6 +23,16 @@ public class Screen_Manager : MonoBehaviour {
 	
 	}
 
+    public void PlayerSelect() {
+        for (int i = 0; i < scenes.Length; i++)
+        {
+            scenes[i].SetActive(false);
+        }
+
+        mainScreen.SetActive(false);
+        scenes[5].SetActive(true);
+    }
+    
     public void GameMode() {
         if (gameMode.value == 1)
         {

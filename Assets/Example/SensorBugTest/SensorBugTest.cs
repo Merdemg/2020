@@ -14,7 +14,7 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] Slider p1healthBar;
     [SerializeField] Slider p2healthBar;
     [SerializeField] TextMeshProUGUI P1DamagedAmount, P2DamagedAmount;
-    [SerializeField] Screen_Manager screen_Manager;
+    //[SerializeField] Screen_Manager screen_Manager;
 
     //public Text AccelerometerText;
     //public Text SensorBugStatusText;
@@ -619,7 +619,7 @@ public class SensorBugTest : MonoBehaviour
                         });
                         //REMOVE CONNECT INFO
                         //ConnectInfo.SetActive(false);
-                        screen_Manager.PlayerSelect();
+                        //screen_Manager.PlayerSelect();
                         break;
 
 

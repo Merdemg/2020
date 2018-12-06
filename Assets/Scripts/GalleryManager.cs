@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class GalleryManager : MonoBehaviour
 {
     [SerializeField] Text myText;
     [SerializeField] Texture2D defaultTexture;
-
-    [SerializeField] Dropdown dropdownP1, dropdownP2;
+    [SerializeField] TMP_Dropdown dropdownP1, dropdownP2;
 
     [SerializeField] RawImage imageP1, imageP2;
 

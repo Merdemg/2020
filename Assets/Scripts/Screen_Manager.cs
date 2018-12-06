@@ -11,6 +11,7 @@ public class Screen_Manager : MonoBehaviour {
 	//Scenes 
 	[SerializeField] GameObject[] scenes = new GameObject[6];
 	[SerializeField] GameObject mainScreen;
+    
 
 	private void Start(){
 	

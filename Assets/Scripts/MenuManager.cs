@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] Dropdown dropdownP1, dropdownP2;
+    [SerializeField] TMP_Dropdown dropdownP1, dropdownP2;
     int NAME_LIST_LENGTH = 100;
     [SerializeField]
     List<string> names = new List<string>();
 
-    [SerializeField] Text p1name, p2name;
+   // [SerializeField] TextMeshProUGUI p1name, p2name;
     
-    Text currentText;
+   // Text currentText;
 
-    [SerializeField] InputField p1inputf, p2inputf;
+    [SerializeField] TMP_InputField p1inputf, p2inputf;
 
     GalleryManager galleryMan;
 
@@ -25,7 +25,7 @@ public class MenuManager : MonoBehaviour
     {
         galleryMan = GetComponent<GalleryManager>();
 
-        currentText = p1name;
+       // currentText = p1name;
         populateList();
         Debug.Log("names length: " + names.Count);
 

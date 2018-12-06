@@ -12,6 +12,8 @@ public class GalleryManager : MonoBehaviour
 
     [SerializeField] RawImage imageP1, imageP2;
 
+    [SerializeField] float minScale = 0.3f;
+
     // Use this for initialization
     void Start()
     {
@@ -72,6 +74,20 @@ public class GalleryManager : MonoBehaviour
 
     }
 
+    public void changeScaleP1(float sliderV)
+    {
+        float scale = minScale + ((1.0f - minScale) * sliderV);
+        imageP1.transform.localScale *= scale;
+    }
+
+    public void changeScaleP2(float sliderV)
+    {
+        float scale = minScale + ((1.0f - minScale) * sliderV);
+        imageP2.transform.localScale *= scale;
+    }
+
+
+
     void pickImage(int maxSize, RawImage image, bool isP1)
     {
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
@@ -93,6 +109,8 @@ public class GalleryManager : MonoBehaviour
                 //new
                 //image.material.mainTexture = texture;
                 image.texture = texture;
+
+                image.SetNativeSize();
 
                 int i;
                 // SAVE THE PATH TO PLAYERPREFS for profile

@@ -482,8 +482,9 @@ public static class NativeGallery
 	public static Texture2D LoadImageAtPath( string imagePath, int maxSize = -1, bool markTextureNonReadable = true,
 		bool generateMipmaps = true, bool linearColorSpace = false )
 	{
-		if( string.IsNullOrEmpty( imagePath ) )
-			throw new ArgumentException( "Parameter 'imagePath' is null or empty!" );
+        if (string.IsNullOrEmpty(imagePath))
+            return null;
+			//throw new ArgumentException( "Parameter 'imagePath' is null or empty!" );
 
 		if( !File.Exists( imagePath ) )
 			throw new FileNotFoundException( "File not found at " + imagePath );

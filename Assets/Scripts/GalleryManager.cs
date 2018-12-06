@@ -6,6 +6,11 @@ using UnityEngine.UI;
 public class GalleryManager : MonoBehaviour
 {
     [SerializeField] Text myText;
+    [SerializeField] Texture2D defaultTexture;
+
+    [SerializeField] Dropdown dropdownP1, dropdownP2;
+
+    [SerializeField] RawImage imageP1, imageP2;
 
     // Use this for initialization
     void Start()
@@ -21,12 +26,53 @@ public class GalleryManager : MonoBehaviour
 
     }
 
-    public void getGalleryImage(RawImage image)
+    public void getGalleryImageP1(RawImage image)
     {
-        pickImage(512, image);
+        getGalleryImage(image, true);
     }
 
-    void pickImage(int maxSize, RawImage image)
+    public void getGalleryImageP2(RawImage image)
+    {
+        getGalleryImage(image, false);
+    }
+
+    void getGalleryImage(RawImage image, bool isP1)
+    {
+        pickImage(512, image, isP1);
+    }
+
+    public void findImageforProfile(int index, bool isP1)
+    {
+        string s = "2020profilePic" + index;
+        Texture2D tex;
+        if (PlayerPrefs.GetString(s) != null && NativeGallery.LoadImageAtPath(PlayerPrefs.GetString(s), 512) != null)
+        {
+            tex = NativeGallery.LoadImageAtPath(PlayerPrefs.GetString(s), 512);
+        }
+        else
+        {
+            tex = defaultTexture;
+        }
+
+        if (isP1)
+        {
+            imageP1.texture = tex;
+        }
+        else
+        {
+            imageP2.texture = tex;
+        }
+
+    }
+
+
+
+    public void setImageForProfile()
+    {
+
+    }
+
+    void pickImage(int maxSize, RawImage image, bool isP1)
     {
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
         {
@@ -48,6 +94,21 @@ public class GalleryManager : MonoBehaviour
                 //image.material.mainTexture = texture;
                 image.texture = texture;
 
+                int i;
+                // SAVE THE PATH TO PLAYERPREFS for profile
+                if (isP1)
+                {
+                    i = dropdownP1.value;
+                }
+                else
+                {
+                    i = dropdownP2.value;
+                }
+                string s = "2020profilePic" + i;
+                PlayerPrefs.SetString(s, path);
+
+
+
 
                 // Assign texture to a temporary quad and destroy it after 5 seconds
                 //GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -60,9 +121,9 @@ public class GalleryManager : MonoBehaviour
                 //    material.shader = Shader.Find("Legacy Shaders/Diffuse");
 
                 //new
-               // material.mainTexture = texture;
+                // material.mainTexture = texture;
 
-                
+
 
                 //Destroy(quad, 5f);
 

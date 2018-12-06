@@ -158,4 +158,78 @@ public class MenuManager : MonoBehaviour
     {
         debugText.text = "Names size: " + names.Count;
     }
+
+
+    public void deleteP1profile()
+    {
+        string s = "name" + dropdownP1.value;
+        names.Remove(PlayerPrefs.GetString(s));
+
+        for (int i = dropdownP1.value; i < NAME_LIST_LENGTH; i++)
+        {
+            string s2 = "name" + i;
+            if (PlayerPrefs.GetString(s2) != null)
+            {
+                PlayerPrefs.DeleteKey(s2);
+                string s3 = "name" + (i+1);
+                if (PlayerPrefs.GetString(s3) != null)
+                {
+                    PlayerPrefs.SetString(s2, PlayerPrefs.GetString(s3));
+                }
+            }
+
+            s2 = "2020profilePic" + i;
+            if (PlayerPrefs.GetString(s2) != null)
+            {
+                PlayerPrefs.DeleteKey(s2);
+                string s3 = "2020profilePic" + (i + 1);
+                if (PlayerPrefs.GetString(s3) != null)
+                {
+                    PlayerPrefs.SetString(s2, PlayerPrefs.GetString(s3));
+                }
+            }
+
+
+        }
+
+        dropdownP1.value = 0;
+    }
+
+    public void deleteP2profile()
+    {
+        string s = "name" + dropdownP2.value;
+        names.Remove(PlayerPrefs.GetString(s));
+
+        for (int i = dropdownP2.value; i < NAME_LIST_LENGTH; i++)
+        {
+            string s2 = "name" + i;
+            if (PlayerPrefs.GetString(s2) != null)
+            {
+                PlayerPrefs.DeleteKey(s2);
+                string s3 = "name" + (i + 1);
+                if (PlayerPrefs.GetString(s3) != null)
+                {
+                    PlayerPrefs.SetString(s2, PlayerPrefs.GetString(s3));
+                }
+            }
+
+            s2 = "2020profilePic" + i;
+            if (PlayerPrefs.GetString(s2) != null)
+            {
+                PlayerPrefs.DeleteKey(s2);
+                string s3 = "2020profilePic" + (i + 1);
+                if (PlayerPrefs.GetString(s3) != null)
+                {
+                    PlayerPrefs.SetString(s2, PlayerPrefs.GetString(s3));
+                }
+            }
+
+
+        }
+
+        dropdownP2.value = 0;
+    }
+
+    
+
 }

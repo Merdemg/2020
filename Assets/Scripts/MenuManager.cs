@@ -11,6 +11,7 @@ public class MenuManager : MonoBehaviour
     List<string> names = new List<string>();
 
     [SerializeField] Text p1name, p2name;
+    
     Text currentText;
 
     [SerializeField] InputField p1inputf, p2inputf;
@@ -231,5 +232,26 @@ public class MenuManager : MonoBehaviour
     }
 
     
+    public void editP1name(string newName)
+    {
+        string s = "name" + dropdownP1.value;
+        PlayerPrefs.SetString(s, newName);
+
+        dropdownP1.ClearOptions();
+        dropdownP1.AddOptions(names);
+        dropdownP2.ClearOptions();
+        dropdownP2.AddOptions(names);
+    }
+
+    public void editP2name(string newName)
+    {
+        string s = "name" + dropdownP2.value;
+        PlayerPrefs.SetString(s, newName);
+
+        dropdownP1.ClearOptions();
+        dropdownP1.AddOptions(names);
+        dropdownP2.ClearOptions();
+        dropdownP2.AddOptions(names);
+    }
 
 }

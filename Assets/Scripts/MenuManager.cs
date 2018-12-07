@@ -64,6 +64,7 @@ public class MenuManager : MonoBehaviour
         }
 
         //names.Add("NEW");
+        names.Add("ADD NEW");
         Debug.Log("names length: " + names.Count);
         dropdownP1.AddOptions(names);
         dropdownP2.AddOptions(names);
@@ -101,37 +102,42 @@ public class MenuManager : MonoBehaviour
     void dropdownChoice(int index, bool isP1)
     {
         Debug.Log("---------------- names length: " + names.Count);
-        //if (index + 1 >= names.Count)
-        //{
-        //   // newName(isP1);
-        //}
-        //else
-        //{
+        if (index + 1 >= names.Count)
+        {
+           newName(isP1);
+        }
+        else
+        {
         // currentText.text = names[index];
         galleryMan.findImageforProfile(index, isP1);
-        //}
+        }
     }
 
     public void newNameP1()
     {
         newName(true);
-        p1dropdownChoice(dropdownP1.value);
+        //p1dropdownChoice(dropdownP1.value);
     }
 
     public void newNameP2()
     {
         newName(false);
-        p2dropdownChoice(dropdownP2.value);
+        //p2dropdownChoice(dropdownP2.value);
     }
 
     void newName(bool isP1)
     {   // Bring in the text box - ADD LATER
         Debug.Log("new name");
 
+        // new profile>
+        names.Remove("ADD NEW");
+
 
         string s = "name" + names.Count;
         PlayerPrefs.SetString(s, "New Profile");
         names.Add("New Profile");
+
+        names.Add("ADD NEW");
 
         dropdownP1.ClearOptions();
         dropdownP1.AddOptions(names);
@@ -140,14 +146,14 @@ public class MenuManager : MonoBehaviour
 
         if (isP1)
         {
-            dropdownP1.value = names.Count - 1;
+            dropdownP1.value = names.Count - 2;
             galleryMan.getGalleryImageP1();
             //p1inputf.gameObject.SetActive(true);
             //p2inputf.gameObject.SetActive(false);
         }
         else
         {
-            dropdownP2.value = names.Count - 1;
+            dropdownP2.value = names.Count - 2;
             galleryMan.getGalleryImageP2();
             //p1inputf.gameObject.SetActive(false);
             //p2inputf.gameObject.SetActive(true);
@@ -230,6 +236,12 @@ public class MenuManager : MonoBehaviour
 
         }
 
+        dropdownP1.ClearOptions();
+        dropdownP1.AddOptions(names);
+        dropdownP2.ClearOptions();
+        dropdownP2.AddOptions(names);
+
+
         dropdownP1.value = 0;
     }
 
@@ -264,6 +276,12 @@ public class MenuManager : MonoBehaviour
 
 
         }
+
+        dropdownP1.ClearOptions();
+        dropdownP1.AddOptions(names);
+        dropdownP2.ClearOptions();
+        dropdownP2.AddOptions(names);
+
 
         dropdownP2.value = 0;
     }

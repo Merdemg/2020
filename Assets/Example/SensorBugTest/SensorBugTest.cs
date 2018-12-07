@@ -5,6 +5,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using NatCorderU.Examples;
 
 public class SensorBugTest : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] float maxHealth = 24f;
     [SerializeField] Slider p1healthBar;
     [SerializeField] Slider p2healthBar;
-    [SerializeField] TextMeshProUGUI P1DamagedAmount, P2DamagedAmount;
-    //[SerializeField] Screen_Manager screen_Manager;
+    [SerializeField] TextMeshProUGUI P1TotalDamagedAmount, P2TotalDamagedAmount, P1ComboText, P2ComboText, P1BigHitText, P2BigHitText;
+    [SerializeField] GameObject recordVideo;
 
     //public Text AccelerometerText;
     //public Text SensorBugStatusText;
@@ -37,8 +38,7 @@ public class SensorBugTest : MonoBehaviour
     //WINNER ANIMATION SHIT
     public Animator animatorPlayer;
     public Animator animatorWins;
-    public Text playerName;
-    public Text winText;
+    public TextMeshProUGUI playerName, winText;
     public Color playerOneColor;
     public Color playerTwoColor;
 
@@ -78,9 +78,6 @@ public class SensorBugTest : MonoBehaviour
     //a time of 0xFF means that the game time selected is INFINITE
     public uint[] TimerValues = { 0, 10, 15, 20, 30, 45, 60, 90, 120, 180, 0xFF };
 
-    /// LA LA LA
-
-
     public Characteristic GameMode = Characteristics[0];
     public Characteristic GameState = Characteristics[1];
     public Characteristic PlayTimeSelected = Characteristics[2];
@@ -116,7 +113,8 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] GameObject ConnectInfo;
     float scanTimer = 0.0f;
     float P1HealthLoss, P2HealthLoss;
-
+    int P1ComboHits, P2ComboHits;
+    float P1BigHitHealthLoss, P2BigHitHealthLoss;
 
     public class DeviceInfo
     {
@@ -153,8 +151,10 @@ public class SensorBugTest : MonoBehaviour
                 animatorReady.SetTrigger("MatchStart");
                 animatorStart.SetTrigger("MatchStart");
                 startTimer();
+                recordVideo.GetComponent<ReplayCam>().StartRecording();
                 break;
             case 8:     // GAME ENDS
+                recordVideo.GetComponent<ReplayCam>().StopRecording();
                 endGame();
                 break;
             default:
@@ -257,7 +257,7 @@ public class SensorBugTest : MonoBehaviour
         Reset();
         BluetoothLEHardwareInterface.Initialize(true, false, () => {
 
-            SetState(States.Scan, 1.0f);
+            SetState(States.Scan, 2.5f);
 
         }, (error) => {
 
@@ -280,7 +280,7 @@ public class SensorBugTest : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        
+        //StartConnect ();
     }
 
     public void AfterConnected()
@@ -296,10 +296,28 @@ public class SensorBugTest : MonoBehaviour
         LeftComboAmountText.text = ThreeHitCountP1.ToString();
         RightComboAmountText.text = ThreeHitCountP2.ToString();
 
+        P1ComboText.text = P1ComboHits.ToString();
+        P1TotalDamagedAmount.text = Mathf.RoundToInt(P1HealthLoss) + "%";
+        P2ComboText.text = P2ComboHits.ToString();
+        P2TotalDamagedAmount.text = Mathf.RoundToInt(P2HealthLoss) + "%";
+
         if (IsCombo2On)
             ComboTimer2 += Time.deltaTime;
         if (IsCombo1On)
             ComboTimer1 += Time.deltaTime;
+
+        if (ComboTimer1 > 2)
+        {
+            animatorP1Combo.SetBool("Combo", false);
+            P1ComboHits = 0;
+            P1HealthLoss = 0;
+        }
+        if (ComboTimer2 > 2)
+        {
+            animatorP2Combo.SetBool("Combo", false);
+            P2ComboHits = 0;
+            P2HealthLoss = 0;
+        }
 
         if (ThreeHitCombo1On)
             ThreeHitTimer1 += Time.deltaTime;
@@ -327,7 +345,8 @@ public class SensorBugTest : MonoBehaviour
                         DeviceInfo device;
                         BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null, (address, deviceName, signalStrength, bytes) =>
                         {
-                            if (deviceName.Contains(DeviceName) && scanTimer <= 0.5f)
+                            //if (deviceName.Contains(DeviceName) && scanTimer <= 0.5f)
+                            if (deviceName.Contains(DeviceName) && scanTimer <= 2.0f)
                             {
                                 //BigHitText.text = "Found a 2020 Armor device";
                                 device = new DeviceInfo();
@@ -399,6 +418,9 @@ public class SensorBugTest : MonoBehaviour
                     //Consider how to improve this in the future?
 
                     case States.SubscribeToAccelerometer:
+
+                        int subscriptionDelayTime = 500;
+                        
                         SetState(States.SubscribingToAccelerometer, 10f);
                         SensorBugStatusMessage = "Subscribing to Game Mode...";
                         //MAKE SURE THAT THIS IS ONLY HAPPENING ONCE...
@@ -428,7 +450,7 @@ public class SensorBugTest : MonoBehaviour
 
                         //debugText.text = " Tried to subscribe to playtime...";
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, GameState.ServiceUUID,
                         GameState.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -452,7 +474,7 @@ public class SensorBugTest : MonoBehaviour
                             //debugText.text = sBytes + " " + test;
                         });
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, GameMode.ServiceUUID,
                         GameMode.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -473,7 +495,7 @@ public class SensorBugTest : MonoBehaviour
                             //debugText.text = sBytes + " " + test;
                         });
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
 
 
@@ -491,7 +513,6 @@ public class SensorBugTest : MonoBehaviour
 
                             var sBytes = BitConverter.ToUInt32(bytes, 0);
 
-                            CheckHealthLoss(IsPlayer1Red, true, sBytes);
 
                             Player1HealthValue = UpdatePlayerHealth(sBytes, true);
 
@@ -502,11 +523,6 @@ public class SensorBugTest : MonoBehaviour
                                 TriggerPlayerDeath(IsPlayer1Red, true);
                             }
 
-                            CheckPlayerCombo(IsPlayer1Red, true, sBytes);
-
-                            
-
-
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //  debugText.text = "value of Player1Health:" + Player1HealthValue;
@@ -514,7 +530,7 @@ public class SensorBugTest : MonoBehaviour
 
                         });
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
 
 
@@ -532,7 +548,6 @@ public class SensorBugTest : MonoBehaviour
 
                             var sBytes = BitConverter.ToUInt32(bytes, 0);
 
-                            CheckHealthLoss(IsPlayer1Red, false, sBytes);
 
                             Player2HealthValue = UpdatePlayerHealth(sBytes, false);
                             //check if player is dead
@@ -542,11 +557,6 @@ public class SensorBugTest : MonoBehaviour
                                 TriggerPlayerDeath(IsPlayer1Red, false);
                             }
 
-                            CheckPlayerCombo(IsPlayer1Red, false, sBytes);
-
-                            
-
-
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             // debugText.text = "value of Player2Health:" + Player2HealthValue;
@@ -555,7 +565,7 @@ public class SensorBugTest : MonoBehaviour
 
 
                         //Test Players Colour
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Colour.ServiceUUID,
                         Player1Colour.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) =>
@@ -578,7 +588,7 @@ public class SensorBugTest : MonoBehaviour
                         });
 
                         //Test Big Hit
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player1Impact.ServiceUUID,
                         Player1Impact.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -592,13 +602,15 @@ public class SensorBugTest : MonoBehaviour
                             var sBytes = bytes[0];
 
                             if (sBytes >= 4)
-                                CheckBigHit(IsPlayer1Red, true);
+                                CheckBigHit(IsPlayer1Red, true, sBytes);
 
                             CheckPlayerPoints(IsPlayer1Red, true, sBytes);
 
+                            CheckPlayerCombo(IsPlayer1Red, true, sBytes);
+
                         });
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(subscriptionDelayTime);
 
                         BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(_deviceAddress, Player2Impact.ServiceUUID,
                         Player2Impact.CharacteristicUUID, null, (deviceAddress, characteristric, bytes) => {
@@ -612,14 +624,15 @@ public class SensorBugTest : MonoBehaviour
                             var sBytes = bytes[0];
 
                             if (sBytes >= 4)
-                                CheckBigHit(IsPlayer1Red, false);
+                                CheckBigHit(IsPlayer1Red, false, sBytes);
 
                             CheckPlayerPoints(IsPlayer1Red, false, sBytes);
 
+                            CheckPlayerCombo(IsPlayer1Red, false, sBytes);
+
                         });
                         //REMOVE CONNECT INFO
-                        //ConnectInfo.SetActive(false);
-                        //screen_Manager.PlayerSelect();
+                        ConnectInfo.SetActive(false);
                         break;
 
 
@@ -706,22 +719,25 @@ public class SensorBugTest : MonoBehaviour
         animatorWins.SetTrigger("Win");
     }
 
-    void CheckBigHit(bool IsP1Red, bool Player1GotHit)
+    void CheckBigHit(bool IsP1Red, bool Player1GotHit, int bytes)
     {
         if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
         {
             animatorP2BigHit.SetTrigger("Hit");
             //BigHitText.text = "P2 GOT A BIG HIT!";
+            P2BigHitHealthLoss = bytes * 100.0f / 24.0f;
+            P2BigHitText.text = Mathf.RoundToInt(P2BigHitHealthLoss) + "%";
         }
 
         if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
         {
             animatorP1BigHit.SetTrigger("Hit");
             //BigHitText.text = "P1 GOT A BIG HIT!";
+            P1BigHitHealthLoss = bytes * 100.0f / 24.0f;
+            P1BigHitText.text = Mathf.RoundToInt(P1BigHitHealthLoss) + "%";
         }
     }
-
-    void CheckPlayerCombo(bool IsP1Red, bool Player1GotHit, uint bytes)
+    void CheckPlayerCombo(bool IsP1Red, bool Player1GotHit, int bytes)
     {
         if ((Player1GotHit && IsP1Red) || (!Player1GotHit && !IsP1Red))
         {
@@ -729,8 +745,9 @@ public class SensorBugTest : MonoBehaviour
             {
                 if (ComboTimer2 < 2)
                 {
-                    animatorP2Combo.SetTrigger("Combo");
-                    P1HealthLoss += Mathf.Round(bytes / 24 * 100);
+                    ComboTimer2 = 0.0f;
+                    P2ComboHits += 1;
+                    P2HealthLoss += bytes * 100.0f / 24.0f;
                     //SensorBugStatusText.text = "Player 2 got a combo!";
                     if (ComboTimer2 > 0.0f && ComboTimer2 <= 1.0f)
                     {
@@ -740,30 +757,38 @@ public class SensorBugTest : MonoBehaviour
                     {
                         P2Points += 3000;
                     }
-                    ComboTimer2 = 0;
+                    //ComboTimer2 = 0.0f;
+                    animatorP2Combo.SetBool("Combo", true);
                 }
                 else
                 {
                     //SensorBugStatusText.text = "Reset combo 2 timer";
-                    ComboTimer2 = 0;
+                    //animatorP2Combo.SetBool("Combo", false);
+                    ComboTimer2 = 0.0f;
+                    P2HealthLoss = bytes * 100.0f / 24.0f;
+                    P2ComboHits = 1;
                 }
             }
             else
             {
                 IsCombo2On = true;
-                P2HealthLoss = Mathf.Round(bytes / 24 * 100);
+                P2HealthLoss = bytes * 100.0f / 24.0f;
+                P2ComboHits = 1;
             }
-
+            P2ComboText.text = P2ComboHits.ToString();
+            //P2DamagedAmount.text = Mathf.RoundToInt(P2HealthLoss) + "%";
+            P2TotalDamagedAmount.text = Mathf.RoundToInt(P2HealthLoss) + "%";
             if (ThreeHitCombo2On)
             {
                 if (ThreeHitTimer2 <= 3.0f)
                 {
                     ThreeHitCountP2 += 1;
+
                     if (ThreeHitCountP2 >= 3)
                     {
                         P2Points += 10000;
                         //ThreeHitCountP2 = 0;
-                        ThreeHitTimer2 = 0.0f;
+                        //ThreeHitTimer2 = 0.0f;
                     }
                 }
                 else
@@ -777,7 +802,6 @@ public class SensorBugTest : MonoBehaviour
                 ThreeHitCombo2On = true;
                 ThreeHitCountP2 = 1;
             }
-            P1DamagedAmount.text = P1HealthLoss + "%";
         }
 
         if ((Player1GotHit && !IsP1Red) || (!Player1GotHit && IsP1Red))
@@ -786,8 +810,9 @@ public class SensorBugTest : MonoBehaviour
             {
                 if (ComboTimer1 < 2)
                 {
-                    animatorP1Combo.SetTrigger("Combo");
-                    P2HealthLoss += Mathf.Round(bytes / 24 * 100);
+                    ComboTimer1 = 0.0f;
+                    P1ComboHits += 1;
+                    P1HealthLoss += bytes * 100.0f / 24.0f;
                     //SensorBugStatusText.text = "Player 1 got a combo!";
                     if (ComboTimer1 > 0.0f && ComboTimer1 <= 1.0f)
                     {
@@ -797,48 +822,53 @@ public class SensorBugTest : MonoBehaviour
                     {
                         P1Points += 3000;
                     }
-                    ComboTimer1 = 0;
+                    //ComboTimer1 = 0.0f;
+                    animatorP1Combo.SetBool("Combo", true);
                 }
                 else
                 {
                     //SensorBugStatusText.text = "Reset combo 1 timer";
-                    ComboTimer1 = 0;
+                    //animatorP1Combo.SetBool("Combo", false);
+                    ComboTimer1 = 0.0f;
+                    P1HealthLoss = bytes * 100.0f / 24.0f;
+                    P1ComboHits = 1;
                 }
             }
             else
             {
                 IsCombo1On = true;
-                P2HealthLoss = Mathf.Round(bytes / 24 * 100);
+                P1HealthLoss = bytes * 100.0f / 24.0f;
+                P1ComboHits = 1;
             }
+
+            P1ComboText.text = P1ComboHits.ToString();
+            //P1DamagedAmount.text = Mathf.RoundToInt(P1HealthLoss) + "%";
+            P1TotalDamagedAmount.text = Mathf.RoundToInt(P1HealthLoss) + "%";
 
             if (ThreeHitCombo1On)
             {
                 if (ThreeHitTimer1 <= 3.0f)
                 {
                     ThreeHitCountP1 += 1;
-                    
+
                     if (ThreeHitCountP1 >= 3)
                     {
                         P1Points += 10000;
-                        //ThreeHitCountP1 = 0;
-                        ThreeHitTimer1 = 0.0f;
+
+                        //ThreeHitTimer1 = 0.0f;
                     }
                 }
                 else
                 {
                     ThreeHitCountP1 = 1;
                     ThreeHitTimer1 = 0.0f;
-                    
                 }
             }
             else
             {
                 ThreeHitCombo1On = true;
                 ThreeHitCountP1 = 1;
-                
             }
-            
-            P2DamagedAmount.text = P2HealthLoss + "%";
         }
     }
 
@@ -901,20 +931,4 @@ public class SensorBugTest : MonoBehaviour
                 P1Points += 5000;
         }
     }
-
-    void CheckHealthLoss(bool IsP1Red, bool Player1GotHit, uint bytes)
-    {
-        //if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
-        //{
-        //    P1HealthLoss = Mathf.Round(bytes / 24);
-        //    P1DamagedAmount.text = P1HealthLoss + "%";
-        //}
-
-        //if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
-        //{
-        //    P2HealthLoss = Mathf.Round(bytes / 24);
-        //    P2DamagedAmount.text = P2HealthLoss + "%";
-        //}
-    }
-
 }

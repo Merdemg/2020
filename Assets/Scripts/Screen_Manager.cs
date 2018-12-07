@@ -11,20 +11,18 @@ public class Screen_Manager : MonoBehaviour {
 	//Scenes 
 	[SerializeField] GameObject[] scenes = new GameObject[6];
 	[SerializeField] GameObject mainScreen;
+    [SerializeField] GameObject testScreen;
 
-    string p1name, p2name;
-    Texture2D p1tex, p2tex;
-
-	private void Start(){
+    private void Start(){
 	
 		mainScreen.SetActive (true);
 		for (int i = 0; i < scenes.Length; i++) {
 			scenes [i].SetActive (false);		
 		}
 		scenes [0].SetActive (true);
+        testScreen.SetActive(false);
 
-	
-	}
+    }
 
     public void PlayerSelect() {
         for (int i = 0; i < scenes.Length; i++)
@@ -45,38 +43,6 @@ public class Screen_Manager : MonoBehaviour {
             GameScene();
 
         }
-    }
-
-    public void setP2info()
-    {
-        p2name = FindObjectOfType<MenuManager>().getP2name();
-        p2tex = FindObjectOfType<GalleryManager>().getP2tex();
-    }
-
-    public void setP1info()
-    {
-        p2name = FindObjectOfType<MenuManager>().getP1name();
-        p2tex = FindObjectOfType<GalleryManager>().getP1tex();
-    }
-
-    public string getP1name()
-    {
-        return p1name;
-    }
-
-    public string getP2name()
-    {
-        return p2name;
-    }
-
-    public Texture2D getP1tex()
-    {
-        return p1tex;
-    }
-
-    public Texture2D getP2tex()
-    {
-        return p2tex;
     }
 
     public void LogoScreen() {
@@ -115,14 +81,12 @@ public class Screen_Manager : MonoBehaviour {
 		}
 
 		scenes [0].SetActive (true);
+        testScreen.SetActive(true);
 
-        
     }
     public void ConnectingScreen() {
         scenes[4].SetActive(true);
 
     }
-
-
 
 }

@@ -12,9 +12,9 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI p1name1, p1name2, p2name1, p2name2;
 
-   // [SerializeField] TextMeshProUGUI p1name, p2name;
-    
-   // Text currentText;
+    // [SerializeField] TextMeshProUGUI p1name, p2name;
+
+    // Text currentText;
 
     [SerializeField] TMP_InputField p1inputf, p2inputf;
 
@@ -27,7 +27,7 @@ public class MenuManager : MonoBehaviour
     {
         galleryMan = GetComponent<GalleryManager>();
 
-       // currentText = p1name;
+        // currentText = p1name;
         populateList();
         Debug.Log("names length: " + names.Count);
 
@@ -39,7 +39,7 @@ public class MenuManager : MonoBehaviour
     void Update()
     {
         //Debug.Log( names.Count.ToString());
-    //    Debug.Log("names length: " + names.Count);
+        //    Debug.Log("names length: " + names.Count);
     }
 
     void populateList()
@@ -73,7 +73,7 @@ public class MenuManager : MonoBehaviour
         //galleryMan.findImageforProfile(dropdownP1.value, true);
         //galleryMan.findImageforProfile(dropdownP2.value, false);
 
-        
+
     }
 
     public void p2dropdownChoice(int index)
@@ -107,8 +107,8 @@ public class MenuManager : MonoBehaviour
         //}
         //else
         //{
-            // currentText.text = names[index];
-            galleryMan.findImageforProfile(index, isP1);
+        // currentText.text = names[index];
+        galleryMan.findImageforProfile(index, isP1);
         //}
     }
 
@@ -159,7 +159,7 @@ public class MenuManager : MonoBehaviour
         Debug.Log("get name");
         getName(name, true);
         //p1inputf.gameObject.SetActive(false);
-        dropdownP1.value = names.Count -1;
+        dropdownP1.value = names.Count - 1;
         p1dropdownChoice(dropdownP1.value);
     }
 
@@ -167,8 +167,8 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log("get name");
         getName(name, false);
-       //p2inputf.gameObject.SetActive(false);
-        dropdownP2.value = names.Count -1;
+        //p2inputf.gameObject.SetActive(false);
+        dropdownP2.value = names.Count - 1;
         p2dropdownChoice(dropdownP2.value);
     }
 
@@ -209,7 +209,7 @@ public class MenuManager : MonoBehaviour
             if (PlayerPrefs.GetString(s2) != null)
             {
                 PlayerPrefs.DeleteKey(s2);
-                string s3 = "name" + (i+1);
+                string s3 = "name" + (i + 1);
                 if (PlayerPrefs.GetString(s3) != null)
                 {
                     PlayerPrefs.SetString(s2, PlayerPrefs.GetString(s3));
@@ -268,7 +268,7 @@ public class MenuManager : MonoBehaviour
         dropdownP2.value = 0;
     }
 
-    
+
     public void editP1name(string newName)
     {
         string s = "name" + dropdownP1.value;

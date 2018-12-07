@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class logoManager : MonoBehaviour {
     [SerializeField] RawImage image;
+    [SerializeField] RawImage imageInFightScene;
 
 	// Use this for initialization
 	void Start () {
@@ -40,6 +42,7 @@ public class logoManager : MonoBehaviour {
                 //new
                 //image.material.mainTexture = texture;
                 image.texture = texture;
+                imageInFightScene.texture = texture;
 
                 //TextMesh.game
                 //image.SetNativeSize();

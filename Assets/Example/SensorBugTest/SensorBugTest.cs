@@ -54,6 +54,8 @@ public class SensorBugTest : MonoBehaviour
     public Color playerTwoColor;
 
 
+    string p1name, p2name;
+
     int test = 0;
 
     public class Characteristic
@@ -725,13 +727,14 @@ public class SensorBugTest : MonoBehaviour
         {
             winText.color = playerTwoColor;
             playerName.color = playerTwoColor;
-            playerName.text = "Christoph Sonnen";
+            playerName.text = FindObjectOfType<MenuManager>().getP1name();
+
         }
         if ((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
         {
             playerName.color = playerOneColor;
             winText.color = playerOneColor;
-            playerName.text = "Ali Ghafour";
+            playerName.text = FindObjectOfType<MenuManager>().getP2name();
         }
         animatorPlayer.SetTrigger("Win");
         animatorWins.SetTrigger("Win");
@@ -953,5 +956,14 @@ public class SensorBugTest : MonoBehaviour
             if (ComboTimer2 > 0 && ComboTimer2 <= 1.0f)
                 P1Points += 5000;
         }
+    }
+
+    public void setp1name(string name)
+    {
+        p1name = name;
+    }
+    public void setp2name(string name)
+    {
+        p2name = name;
     }
 }

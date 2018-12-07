@@ -102,6 +102,16 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    public void newNameP1()
+    {
+        newName(true);
+    }
+
+    public void newNameP2()
+    {
+        newName(false);
+    }
+
     void newName(bool isP1)
     {   // Bring in the text box - ADD LATER
         Debug.Log("new name");

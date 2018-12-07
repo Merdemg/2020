@@ -66,8 +66,8 @@ public class Screen_Manager : MonoBehaviour {
     }
 
 	public void GameScene(){
-
-		for (int i = 0; i < scenes.Length; i++) {
+        testScreen.SetActive(true);
+        for (int i = 0; i < scenes.Length; i++) {
 			scenes [i].SetActive (false);		
 		}
 		mainScreen.SetActive (false);
@@ -79,9 +79,9 @@ public class Screen_Manager : MonoBehaviour {
 		for (int i = 0; i < scenes.Length; i++) {
 			scenes [i].SetActive (false);		
 		}
-
+        mainScreen.SetActive(true);
 		scenes [0].SetActive (true);
-        testScreen.SetActive(true);
+        testScreen.SetActive(false);
 
     }
     public void ConnectingScreen() {

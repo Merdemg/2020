@@ -17,6 +17,13 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] TextMeshProUGUI P1TotalDamagedAmount, P2TotalDamagedAmount, P1ComboText, P2ComboText, P1BigHitText, P2BigHitText;
     [SerializeField] GameObject recordVideo;
 
+    [SerializeField] Button btn_Next;
+
+    float p1_hpPercent;
+    float p2_hpPercent;
+    [SerializeField] TextMeshProUGUI p1_hpText;
+    [SerializeField] TextMeshProUGUI p2_hpText;
+
     //public Text AccelerometerText;
     //public Text SensorBugStatusText;
     //public Text BigHitText;
@@ -29,6 +36,10 @@ public class SensorBugTest : MonoBehaviour
 
     //ANIMATION VARIABLES
     //Round start
+
+    [SerializeField] Animator p1_combo, p1_counter, p1_bigHit, p2_combo, p2_counter, p2_bigHit;
+
+
     public Animator animatorReady;
     public Animator animatorStart;
     public Animator animatorP1Combo;
@@ -278,10 +289,7 @@ public class SensorBugTest : MonoBehaviour
 
     // Fixed Update is called once per 0.2 frames
     // Use this for initialization
-    void Start()
-    {
-        //StartConnect ();
-    }
+ 
 
     public void AfterConnected()
     {
@@ -291,6 +299,13 @@ public class SensorBugTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Update Health Percent on Projector Screen
+        p1_hpPercent = Mathf.Round (( p1healthBar.value/ maxHealth) * 100);
+        p2_hpPercent = Mathf.Round(( p2healthBar.value / maxHealth) * 100);
+
+        p1_hpText.text = p1_hpPercent + "%";
+        p2_hpText.text = p2_hpPercent + "%";
+
         LeftPoint.text = P1Points.ToString("D8");
         RightPoint.text = P2Points.ToString("D8");
         LeftComboAmountText.text = ThreeHitCountP1.ToString();
@@ -633,6 +648,9 @@ public class SensorBugTest : MonoBehaviour
                         });
                         //REMOVE CONNECT INFO
                         ConnectInfo.SetActive(false);
+                        btn_Next.interactable = true;
+                        
+
                         break;
 
 
@@ -723,6 +741,7 @@ public class SensorBugTest : MonoBehaviour
     {
         if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
         {
+            p2_bigHit.SetTrigger("Hit");
             animatorP2BigHit.SetTrigger("Hit");
             //BigHitText.text = "P2 GOT A BIG HIT!";
             P2BigHitHealthLoss = bytes * 100.0f / 24.0f;
@@ -731,6 +750,7 @@ public class SensorBugTest : MonoBehaviour
 
         if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
         {
+             p1_bigHit.SetTrigger("Hit");
             animatorP1BigHit.SetTrigger("Hit");
             //BigHitText.text = "P1 GOT A BIG HIT!";
             P1BigHitHealthLoss = bytes * 100.0f / 24.0f;
@@ -759,6 +779,7 @@ public class SensorBugTest : MonoBehaviour
                     }
                     //ComboTimer2 = 0.0f;
                     animatorP2Combo.SetBool("Combo", true);
+                    p2_combo.SetBool("Combo", true);
                 }
                 else
                 {
@@ -767,6 +788,7 @@ public class SensorBugTest : MonoBehaviour
                     ComboTimer2 = 0.0f;
                     P2HealthLoss = bytes * 100.0f / 24.0f;
                     P2ComboHits = 1;
+                    
                 }
             }
             else
@@ -824,6 +846,7 @@ public class SensorBugTest : MonoBehaviour
                     }
                     //ComboTimer1 = 0.0f;
                     animatorP1Combo.SetBool("Combo", true);
+                    p1_combo.SetBool("Combo", true);
                 }
                 else
                 {

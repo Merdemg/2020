@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 public class GalleryManager : MonoBehaviour
 {
+
     [SerializeField] Text myText;
     [SerializeField] Texture2D defaultTexture;
     [SerializeField] TMP_Dropdown dropdownP1, dropdownP2;
@@ -15,9 +16,15 @@ public class GalleryManager : MonoBehaviour
 
     [SerializeField] RawImage p1ActualImage1, p1ActualImage2, p2ActualImage1, p2ActualImage2;
 
+    [SerializeField] GameObject p1_overlay, p2_overlay;
+
     // Use this for initialization
     void Start()
     {
+        //Pick Blue Player first
+        p1_overlay.SetActive(true);
+        p2_overlay.SetActive(false);
+
         //pickImage(512);
         //NativeGallery.GetImageFromGallery();
         myText.text = "test";
@@ -57,10 +64,13 @@ public class GalleryManager : MonoBehaviour
             tex = defaultTexture;
         }
 
+        
+
         if (isP1)
         {
             imageP1.texture = tex;
             imageP1.SetNativeSize();
+
 
             p1ActualImage1.texture = tex;
             p1ActualImage2.texture = tex;
@@ -69,6 +79,7 @@ public class GalleryManager : MonoBehaviour
         {
             imageP2.texture = tex;
             imageP2.SetNativeSize();
+
 
             p2ActualImage1.texture = tex;
             p2ActualImage2.texture = tex;
@@ -191,4 +202,33 @@ public class GalleryManager : MonoBehaviour
         p2ActualImage1.transform.localScale = imageP2.transform.localScale;
         p2ActualImage2.transform.localScale = imageP2.transform.localScale;
     }
+
+    public void ChooseRedPlayer() {
+        p1_overlay.SetActive(false);
+        p2_overlay.SetActive(true);
+
+    }
+    public void ChooseBluePlayer()
+    {
+        p1_overlay.SetActive(true);
+        p2_overlay.SetActive(false);
+
+    }
+
+
+    /* void arrangeIcon(RawImage img)
+     {
+         float h = img.rectTransform.rect.height;
+         float w = img.rectTransform.rect.width;
+
+         float h2 = img.transform.parent.GetComponent<RectTransform>().rect.height;
+         float w2 = img.transform.parent.GetComponent<RectTransform>().rect.width;
+
+         Vector2 vec2 = img.transform.localScale;
+         vec2.y *= h2 / h;
+         vec2.x *= w2 / w;
+
+
+         //img.transform.parent.GetComponent<RectTransform>().rect.width;
+     }*/
 }

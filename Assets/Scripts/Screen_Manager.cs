@@ -20,10 +20,10 @@ public class Screen_Manager : MonoBehaviour {
 			scenes [i].SetActive (false);		
 		}
 		scenes [0].SetActive (true);
-        testScreen.SetActive(false);
+        
 
     }
-
+    
     public void PlayerSelect() {
         for (int i = 0; i < scenes.Length; i++)
         {

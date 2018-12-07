@@ -48,7 +48,7 @@ public class SensorBugTest : MonoBehaviour
     public Animator animatorP2BigHit;
     //WINNER ANIMATION SHIT
     public Animator animatorPlayer;
-    public Animator animatorWins;
+    //public Animator animatorWins;
     public TextMeshProUGUI playerName, winText;
     public Color playerOneColor;
     public Color playerTwoColor;
@@ -737,7 +737,7 @@ public class SensorBugTest : MonoBehaviour
             playerName.text = FindObjectOfType<MenuManager>().getP2name();
         }
         animatorPlayer.SetTrigger("Win");
-        animatorWins.SetTrigger("Win");
+        //animatorWins.SetTrigger("Win");
     }
 
     void CheckBigHit(bool IsP1Red, bool Player1GotHit, int bytes)

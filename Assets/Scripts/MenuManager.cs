@@ -10,6 +10,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     List<string> names = new List<string>();
 
+    [SerializeField] TextMeshProUGUI p1name1, p1name2, p2name1, p2name2;
+
    // [SerializeField] TextMeshProUGUI p1name, p2name;
     
    // Text currentText;
@@ -54,14 +56,14 @@ public class MenuManager : MonoBehaviour
         debugText.text = names.Count + " obj in names.";
         if (names.Count < 1)
         {
-            names.Add("Ali Gafour");
-            names.Add("Christoph Sonnen");
+            names.Add("New Profile 1");
+            names.Add("New Profile 2");
 
-            PlayerPrefs.SetString("name0", "Ali Gafour");
-            PlayerPrefs.SetString("name1", "Christoph Sonnen");
+            PlayerPrefs.SetString("name0", "New Profile 1");
+            PlayerPrefs.SetString("name1", "New Profile 2");
         }
 
-        names.Add("NEW");
+        //names.Add("NEW");
         Debug.Log("names length: " + names.Count);
         dropdownP1.AddOptions(names);
         dropdownP2.AddOptions(names);
@@ -78,6 +80,10 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log(index + " chosen");
         dropdownChoice(index, false);
+        p2inputf.text = "";
+
+        p2name1.text = names[index];
+        p2name2.text = names[index];
     }
 
     public void p1dropdownChoice(int index)
@@ -86,44 +92,65 @@ public class MenuManager : MonoBehaviour
         Debug.Log("---------------- names length: " + names.Count);
         Debug.Log(index + " chosen");
         dropdownChoice(index, true);
+        p1inputf.text = "";
+
+        p1name1.text = names[index];
+        p1name2.text = names[index];
     }
 
     void dropdownChoice(int index, bool isP1)
     {
         Debug.Log("---------------- names length: " + names.Count);
-        if (index + 1 >= names.Count)
-        {
-            newName(isP1);
-        }
-        else
-        {
+        //if (index + 1 >= names.Count)
+        //{
+        //   // newName(isP1);
+        //}
+        //else
+        //{
             // currentText.text = names[index];
             galleryMan.findImageforProfile(index, isP1);
-        }
+        //}
     }
 
     public void newNameP1()
     {
         newName(true);
+        p1dropdownChoice(dropdownP1.value);
     }
 
     public void newNameP2()
     {
         newName(false);
+        p2dropdownChoice(dropdownP2.value);
     }
 
     void newName(bool isP1)
     {   // Bring in the text box - ADD LATER
         Debug.Log("new name");
+
+
+        string s = "name" + names.Count;
+        PlayerPrefs.SetString(s, "New Profile");
+        names.Add("New Profile");
+
+        dropdownP1.ClearOptions();
+        dropdownP1.AddOptions(names);
+        dropdownP2.ClearOptions();
+        dropdownP2.AddOptions(names);
+
         if (isP1)
         {
-            p1inputf.gameObject.SetActive(true);
-            p2inputf.gameObject.SetActive(false);
+            dropdownP1.value = names.Count - 1;
+            galleryMan.getGalleryImageP1();
+            //p1inputf.gameObject.SetActive(true);
+            //p2inputf.gameObject.SetActive(false);
         }
         else
         {
-            p1inputf.gameObject.SetActive(false);
-            p2inputf.gameObject.SetActive(true);
+            dropdownP2.value = names.Count - 1;
+            galleryMan.getGalleryImageP2();
+            //p1inputf.gameObject.SetActive(false);
+            //p2inputf.gameObject.SetActive(true);
         }
     }
 
@@ -131,8 +158,8 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log("get name");
         getName(name, true);
-        p1inputf.gameObject.SetActive(false);
-        dropdownP1.value = names.Count -2;
+        //p1inputf.gameObject.SetActive(false);
+        dropdownP1.value = names.Count -1;
         p1dropdownChoice(dropdownP1.value);
     }
 
@@ -140,8 +167,8 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log("get name");
         getName(name, false);
-        p2inputf.gameObject.SetActive(false);
-        dropdownP2.value = names.Count -2;
+       //p2inputf.gameObject.SetActive(false);
+        dropdownP2.value = names.Count -1;
         p2dropdownChoice(dropdownP2.value);
     }
 
@@ -151,10 +178,10 @@ public class MenuManager : MonoBehaviour
 
         string s = "name" + names.Count;
         PlayerPrefs.SetString(s, newName);
-        names.Remove("NEW");
+        //names.Remove("NEW");
 
         names.Add(newName);
-        names.Add("NEW");
+        //names.Add("NEW");
 
         dropdownP1.ClearOptions();
         dropdownP1.AddOptions(names);
@@ -246,22 +273,38 @@ public class MenuManager : MonoBehaviour
     {
         string s = "name" + dropdownP1.value;
         PlayerPrefs.SetString(s, newName);
+        names[dropdownP1.value] = newName;
 
         dropdownP1.ClearOptions();
         dropdownP1.AddOptions(names);
         dropdownP2.ClearOptions();
         dropdownP2.AddOptions(names);
+
+        p1dropdownChoice(dropdownP1.value);
     }
 
     public void editP2name(string newName)
     {
         string s = "name" + dropdownP2.value;
         PlayerPrefs.SetString(s, newName);
+        names[dropdownP2.value] = newName;
 
         dropdownP1.ClearOptions();
         dropdownP1.AddOptions(names);
         dropdownP2.ClearOptions();
         dropdownP2.AddOptions(names);
+
+        p2dropdownChoice(dropdownP2.value);
     }
 
+
+    public string getP1name()
+    {
+        return names[dropdownP1.value];
+    }
+
+    public string getP2name()
+    {
+        return names[dropdownP2.value];
+    }
 }

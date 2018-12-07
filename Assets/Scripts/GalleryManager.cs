@@ -13,6 +13,8 @@ public class GalleryManager : MonoBehaviour
 
     [SerializeField] float minScale = 0.3f;
 
+    [SerializeField] RawImage p1ActualImage1, p1ActualImage2, p2ActualImage1, p2ActualImage2;
+
     // Use this for initialization
     void Start()
     {
@@ -27,14 +29,14 @@ public class GalleryManager : MonoBehaviour
 
     }
 
-    public void getGalleryImageP1(RawImage image)
+    public void getGalleryImageP1()
     {
-        getGalleryImage(image, true);
+        getGalleryImage(imageP1, true);
     }
 
-    public void getGalleryImageP2(RawImage image)
+    public void getGalleryImageP2()
     {
-        getGalleryImage(image, false);
+        getGalleryImage(imageP2, false);
     }
 
     void getGalleryImage(RawImage image, bool isP1)
@@ -58,12 +60,21 @@ public class GalleryManager : MonoBehaviour
         if (isP1)
         {
             imageP1.texture = tex;
+            imageP1.SetNativeSize();
+
+            p1ActualImage1.texture = tex;
+            p1ActualImage2.texture = tex;
         }
         else
         {
             imageP2.texture = tex;
+            imageP2.SetNativeSize();
+
+            p2ActualImage1.texture = tex;
+            p2ActualImage2.texture = tex;
         }
 
+        setScales();
     }
 
 
@@ -77,14 +88,15 @@ public class GalleryManager : MonoBehaviour
     {
         float scale = minScale + ((1.0f - minScale) * sliderV);
         imageP1.transform.localScale *= scale;
+        setScales();
     }
 
     public void changeScaleP2(float sliderV)
     {
         float scale = minScale + ((1.0f - minScale) * sliderV);
         imageP2.transform.localScale *= scale;
+        setScales();
     }
-
 
 
     void pickImage(int maxSize, RawImage image, bool isP1)
@@ -116,11 +128,19 @@ public class GalleryManager : MonoBehaviour
                 if (isP1)
                 {
                     i = dropdownP1.value;
+
+                    p1ActualImage1.texture = texture;
+                    p1ActualImage2.texture = texture;
                 }
                 else
                 {
                     i = dropdownP2.value;
+
+                    p2ActualImage1.texture = texture;
+                    p2ActualImage2.texture = texture;
                 }
+
+                setScales();
                 string s = "2020profilePic" + i;
                 PlayerPrefs.SetString(s, path);
 
@@ -151,5 +171,24 @@ public class GalleryManager : MonoBehaviour
         }, "Select a PNG image", "image/png", maxSize);
 
         Debug.Log("Permission result: " + permission);
+    }
+
+
+    public Texture2D getP1tex()
+    {
+        return (Texture2D)imageP1.texture;
+    }
+
+    public Texture2D getP2tex()
+    {
+        return (Texture2D)imageP2.texture;
+    }
+
+    void setScales()
+    {
+        p1ActualImage1.transform.localScale = imageP1.transform.localScale;
+        p1ActualImage2.transform.localScale = imageP1.transform.localScale;
+        p2ActualImage1.transform.localScale = imageP2.transform.localScale;
+        p2ActualImage2.transform.localScale = imageP2.transform.localScale;
     }
 }

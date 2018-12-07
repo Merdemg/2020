@@ -11,7 +11,9 @@ public class Screen_Manager : MonoBehaviour {
 	//Scenes 
 	[SerializeField] GameObject[] scenes = new GameObject[6];
 	[SerializeField] GameObject mainScreen;
-    
+
+    string p1name, p2name;
+    Texture2D p1tex, p2tex;
 
 	private void Start(){
 	
@@ -43,6 +45,38 @@ public class Screen_Manager : MonoBehaviour {
             GameScene();
 
         }
+    }
+
+    public void setP2info()
+    {
+        p2name = FindObjectOfType<MenuManager>().getP2name();
+        p2tex = FindObjectOfType<GalleryManager>().getP2tex();
+    }
+
+    public void setP1info()
+    {
+        p2name = FindObjectOfType<MenuManager>().getP1name();
+        p2tex = FindObjectOfType<GalleryManager>().getP1tex();
+    }
+
+    public string getP1name()
+    {
+        return p1name;
+    }
+
+    public string getP2name()
+    {
+        return p2name;
+    }
+
+    public Texture2D getP1tex()
+    {
+        return p1tex;
+    }
+
+    public Texture2D getP2tex()
+    {
+        return p2tex;
     }
 
     public void LogoScreen() {
@@ -88,5 +122,7 @@ public class Screen_Manager : MonoBehaviour {
         scenes[4].SetActive(true);
 
     }
+
+
 
 }

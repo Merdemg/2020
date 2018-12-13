@@ -1581,12 +1581,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropdownP1: {fileID: 0}
-  dropdownP2: {fileID: 114454409622687504}
+  dropdownP2: {fileID: 0}
   names: []
-  p1name: {fileID: 0}
-  p2name: {fileID: 0}
-  p1inputf: {fileID: 114360764971850284}
-  p2inputf: {fileID: 114808131532287820}
+  p1name1: {fileID: 0}
+  p1name2: {fileID: 0}
+  p2name1: {fileID: 0}
+  p2name2: {fileID: 0}
+  p1inputf: {fileID: 0}
+  p2inputf: {fileID: 0}
   debugText: {fileID: 114853886322535454}
 --- !u!114 &114097316998430794
 MonoBehaviour:
@@ -2481,10 +2483,16 @@ MonoBehaviour:
   myText: {fileID: 114853886322535454}
   defaultTexture: {fileID: 2800000, guid: 7a19d21cca73a70419d065557441b987, type: 3}
   dropdownP1: {fileID: 0}
-  dropdownP2: {fileID: 114454409622687504}
+  dropdownP2: {fileID: 0}
   imageP1: {fileID: 0}
   imageP2: {fileID: 114929098118526170}
   minScale: 0.3
+  p1ActualImage1: {fileID: 0}
+  p1ActualImage2: {fileID: 0}
+  p2ActualImage1: {fileID: 0}
+  p2ActualImage2: {fileID: 0}
+  p1_overlay: {fileID: 0}
+  p2_overlay: {fileID: 0}
 --- !u!114 &114333821971044600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5707,8 +5715,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0017089844}
-  m_SizeDelta: {x: 0, y: -0.23999023}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224152288241118158
 RectTransform:

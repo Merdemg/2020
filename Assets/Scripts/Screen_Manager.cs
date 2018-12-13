@@ -20,8 +20,6 @@ public class Screen_Manager : MonoBehaviour {
 			scenes [i].SetActive (false);		
 		}
 		scenes [0].SetActive (true);
-        
-
     }
     
     public void PlayerSelect() {
@@ -86,7 +84,6 @@ public class Screen_Manager : MonoBehaviour {
     }
     public void ConnectingScreen() {
         scenes[4].SetActive(true);
-
     }
 
 }

@@ -40,10 +40,11 @@ namespace NatCorderU.Examples {
             // First make sure recording microphone is only on MP4
             recordMicrophone &= container == Container.MP4;
             // Create recording configurations // Clamp video width to 720
-            var width = 720;
-            var height = width * Screen.height / Screen.width;
+            var width = Screen.width;
+            var height = Screen.height;
+            //var height = width * Screen.height / Screen.width;
             var framerate = container == Container.GIF ? 10 : 30;
-            var videoFormat = new VideoFormat(Screen.width, Screen.height, framerate);
+            var videoFormat = new VideoFormat(width, height, framerate);
             var audioFormat = recordMicrophone ? AudioFormat.Unity: AudioFormat.None;
             // Create a recording clock for generating timestamps
             recordingClock = new RealtimeClock();
@@ -70,6 +71,11 @@ namespace NatCorderU.Examples {
             microphoneSource.loop = true;
             microphoneSource.Play();
             #endif
+        }
+
+        public void EndGameRecord()
+        {
+            Invoke("StopRecording", 5.0f);
         }
 
         public void StopRecording () {

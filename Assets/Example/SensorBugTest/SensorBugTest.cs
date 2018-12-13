@@ -16,6 +16,7 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] Slider p2healthBar;
     [SerializeField] TextMeshProUGUI P1TotalDamagedAmount, P2TotalDamagedAmount, P1ComboText, P2ComboText, P1BigHitText, P2BigHitText;
     [SerializeField] GameObject recordVideo;
+    [SerializeField] GameObject SceneManager;
 
     [SerializeField] Button btn_Next;
 
@@ -167,7 +168,7 @@ public class SensorBugTest : MonoBehaviour
                 recordVideo.GetComponent<ReplayCam>().StartRecording();
                 break;
             case 8:     // GAME ENDS
-                recordVideo.GetComponent<ReplayCam>().StopRecording();
+                recordVideo.GetComponent<ReplayCam>().EndGameRecord();
                 endGame();
                 break;
             default:
@@ -251,6 +252,37 @@ public class SensorBugTest : MonoBehaviour
 
         _pairing = false;
     }
+    //Set to disconnect after connected
+    public TextMeshProUGUI connectionMode;
+    public Button nextButton;
+    bool connection = false;
+
+    public void ConnectState()
+    {
+        if (_connected)
+        {
+            connection = false;
+            scanTimer = 0.0f;
+            BluetoothLEHardwareInterface.DisconnectPeripheral(_deviceAddress, (address) =>
+            {
+                // since we have a callback for disconnect in the connect method above, we don't
+                // need to process the callback here.
+            });
+            deviceList.RemoveRange(0, deviceList.Count);
+            Reset();
+            //ConnectStatus.text = "Disconnecting...";
+            connectionMode.text = "CONNECT\nTO VEST";
+            ConnectInfo.SetActive(false);
+            nextButton.interactable = false;
+        }
+        else
+        {
+            connection = true;
+            ConnectStatus.text = "SEARCHING FOR VEST...\nPLEASE WAIT";
+            SceneManager.GetComponent<Screen_Manager>().ConnectingScreen();
+            StartConnect();
+        }
+    }
 
     //Changes state of the code
     void SetState(States newState, float timeout)
@@ -291,12 +323,7 @@ public class SensorBugTest : MonoBehaviour
 
     // Fixed Update is called once per 0.2 frames
     // Use this for initialization
- 
 
-    public void AfterConnected()
-    {
-        SetState(States.Connect, 0.5f);
-    }
 
     // Update is called once per frame
     void Update()
@@ -363,7 +390,7 @@ public class SensorBugTest : MonoBehaviour
                         BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null, (address, deviceName, signalStrength, bytes) =>
                         {
                             //if (deviceName.Contains(DeviceName) && scanTimer <= 0.5f)
-                            if (deviceName.Contains(DeviceName) && scanTimer <= 2.0f)
+                            if (deviceName.Contains(DeviceName) && scanTimer <= 2.0f && connection == true)
                             {
                                 //BigHitText.text = "Found a 2020 Armor device";
                                 device = new DeviceInfo();
@@ -373,10 +400,10 @@ public class SensorBugTest : MonoBehaviour
                             }
                             else
                             {
-                                foreach (DeviceInfo dI in deviceList)
-                                {
+                                //foreach (DeviceInfo dI in deviceList)
+                                //{
                                     //BigHitText.text = BigHitText.text + "\n" + dI.dAddress + " " + dI.dSignal;
-                                }
+                                //}
                                 BluetoothLEHardwareInterface.StopScan();
                                 _deviceAddress = deviceList[0].dAddress;
                                 compare = deviceList[0].dSignal;
@@ -650,9 +677,9 @@ public class SensorBugTest : MonoBehaviour
                         });
                         //REMOVE CONNECT INFO
                         ConnectInfo.SetActive(false);
-                        btn_Next.interactable = true;
-                        
-
+                        connectionMode.text = "DISCONNECT";
+                        SceneManager.GetComponent<Screen_Manager>().PlayerSelect();
+                        nextButton.interactable = true;
                         break;
 
 
@@ -801,7 +828,6 @@ public class SensorBugTest : MonoBehaviour
                 P2ComboHits = 1;
             }
             P2ComboText.text = P2ComboHits.ToString();
-            //P2DamagedAmount.text = Mathf.RoundToInt(P2HealthLoss) + "%";
             P2TotalDamagedAmount.text = Mathf.RoundToInt(P2HealthLoss) + "%";
             if (ThreeHitCombo2On)
             {
@@ -868,7 +894,6 @@ public class SensorBugTest : MonoBehaviour
             }
 
             P1ComboText.text = P1ComboHits.ToString();
-            //P1DamagedAmount.text = Mathf.RoundToInt(P1HealthLoss) + "%";
             P1TotalDamagedAmount.text = Mathf.RoundToInt(P1HealthLoss) + "%";
 
             if (ThreeHitCombo1On)

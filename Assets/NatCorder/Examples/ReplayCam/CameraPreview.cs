@@ -17,10 +17,13 @@ namespace NatCorderU.Examples {
         public WebCamTexture cameraTexture { get; private set; }
 		private RawImage rawImage;
 		private AspectRatioFitter aspectFitter;
+        private int width, height;
 		
 		IEnumerator Start () {
+            width = Screen.width;
+            height = Screen.height;
 			rawImage = GetComponent<RawImage>();
-            rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(1980, 1080);
+            //rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(1980, 1080);
             aspectFitter = GetComponent<AspectRatioFitter>();
             // Request microphone and camera
             yield return Application.RequestUserAuthorization(UserAuthorization.WebCam | UserAuthorization.Microphone);
@@ -33,7 +36,7 @@ namespace NatCorderU.Examples {
                     break;
                 }
             }
-            cameraTexture = new WebCamTexture(cameraName, 1980, 1080);
+            cameraTexture = new WebCamTexture(cameraName, width, height);
             cameraTexture.Play();
             yield return new WaitUntil(() => cameraTexture.width != 16 && cameraTexture.height != 16); // Workaround for weird bug on macOS
             // Borrow the GreyWorld shader because it supports rotation and mirroring

@@ -22,6 +22,8 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] Text debugText;
 
+    int p1Selection, p2Selection;
+
     // Use this for initialization
     void Start()
     {
@@ -118,6 +120,7 @@ public class MenuManager : MonoBehaviour
         newName(true);
         p1inputf.ActivateInputField();
         p1inputf.Select();
+        TouchScreenKeyboard.Open(p1inputf.text);
         //p1dropdownChoice(dropdownP1.value);
     }
 
@@ -126,6 +129,7 @@ public class MenuManager : MonoBehaviour
         newName(false);
         p2inputf.ActivateInputField();
         p2inputf.Select();
+        TouchScreenKeyboard.Open(p2inputf.text);
         //p2dropdownChoice(dropdownP2.value);
     }
 
@@ -320,13 +324,19 @@ public class MenuManager : MonoBehaviour
     }
 
 
+    public void saveSelections()
+    {
+        p1Selection = dropdownP1.value;
+        p2Selection = dropdownP2.value;
+    }
+
     public string getP1name()
     {
-        return names[dropdownP1.value];
+        return names[p1Selection];
     }
 
     public string getP2name()
     {
-        return names[dropdownP2.value];
+        return names[p2Selection];
     }
 }

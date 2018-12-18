@@ -13,6 +13,9 @@ public class Screen_Manager : MonoBehaviour {
 	[SerializeField] GameObject mainScreen;
     [SerializeField] GameObject testScreen;
 
+
+    [SerializeField] MenuManager menuMan;
+
     private void Start(){
 	
 		mainScreen.SetActive (true);
@@ -33,6 +36,9 @@ public class Screen_Manager : MonoBehaviour {
     }
     
     public void GameMode() {
+        menuMan.saveSelections();
+
+
         if (gameMode.value == 1)
         {
             ProjectorScene();

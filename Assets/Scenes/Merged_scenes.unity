@@ -16059,6 +16059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeviceName: 2020BLE
+  menuMan: {fileID: 798242717}
   maxHealth: 24
   p1healthBar: {fileID: 1895039856}
   p2healthBar: {fileID: 1456528397}
@@ -16082,6 +16083,9 @@ MonoBehaviour:
   animatorProjectorReady: {fileID: 44925457}
   animatorReadyScreen: {fileID: 1251121203}
   winScreenColor: {fileID: 1641871056}
+  display_ProjectorName: {fileID: 55772384}
+  animatorWin: {fileID: 1228015784}
+  animatorWinScreen: {fileID: 1641871058}
   animatorReady: {fileID: 935164221}
   animatorP1Combo: {fileID: 1288408747}
   animatorP2Combo: {fileID: 838695616}
@@ -20498,6 +20502,7 @@ GameObject:
   - component: {fileID: 1641871055}
   - component: {fileID: 1641871057}
   - component: {fileID: 1641871056}
+  - component: {fileID: 1641871058}
   m_Layer: 5
   m_Name: Anim_Win
   m_TagString: Untagged
@@ -20530,7 +20535,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1641871054}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -20558,6 +20563,24 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1641871054}
   m_CullTransparentMesh: 0
+--- !u!95 &1641871058
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1641871054}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2a9cb7d121511a645b4081537f97d849, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1648737922
 GameObject:
   m_ObjectHideFlags: 0
@@ -24389,6 +24412,7 @@ MonoBehaviour:
   - {fileID: 670348221}
   mainScreen: {fileID: 1352210775}
   testScreen: {fileID: 533263426}
+  menuMan: {fileID: 798242717}
 --- !u!1 &1937558109
 GameObject:
   m_ObjectHideFlags: 0

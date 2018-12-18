@@ -11,6 +11,8 @@ public class SensorBugTest : MonoBehaviour
 {
     public string DeviceName = "2020BLE";
 
+    [SerializeField] MenuManager menuMan;
+
     [SerializeField] float maxHealth = 24f;
     [SerializeField] Slider p1healthBar;
     [SerializeField] Slider p2healthBar;
@@ -42,7 +44,11 @@ public class SensorBugTest : MonoBehaviour
     [SerializeField] Animator animatorProjectorReady;
     [SerializeField] Animator animatorReadyScreen; // Holds the game object to set it active at the begining
 
-    [SerializeField] Image winScreenColor; 
+    [SerializeField] Image winScreenColor;
+    [SerializeField] TextMeshProUGUI display_ProjectorName;
+    [SerializeField] Animator animatorWin, animatorWinScreen;
+
+
     #endregion
 
     public Animator animatorReady;
@@ -133,6 +139,8 @@ public class SensorBugTest : MonoBehaviour
     int P1ComboHits, P2ComboHits;
     float P1BigHitHealthLoss, P2BigHitHealthLoss;
 
+    
+
     public class DeviceInfo
     {
         public string dAddress;
@@ -165,10 +173,11 @@ public class SensorBugTest : MonoBehaviour
         switch (stateNum)
         {
             case 4:     // GAME STARTS
+                animatorReadyScreen.SetTrigger("MatchStart");
                 animatorReady.SetTrigger("MatchStart");
 
                 animatorProjectorReady.SetTrigger("MatchStart");
-                animatorReadyScreen.SetTrigger("MatchStart");
+                
 
                 startTimer();
                 recordVideo.GetComponent<ReplayCam>().StartRecording();
@@ -572,6 +581,7 @@ public class SensorBugTest : MonoBehaviour
 
                             if (p1healthBar.value <= 0)
                             {
+                                
                                 TriggerPlayerDeath(IsPlayer1Red, true);
                             }
 
@@ -606,6 +616,8 @@ public class SensorBugTest : MonoBehaviour
 
                             if (p2healthBar.value <= 0)
                             {
+
+                                //dText.text = "Void Called";
                                 TriggerPlayerDeath(IsPlayer1Red, false);
                             }
 
@@ -758,23 +770,34 @@ public class SensorBugTest : MonoBehaviour
     //After this line, the first statement usually refer to player 1 being hit and player 2 gain points
     void TriggerPlayerDeath(bool IsP1Red, bool Player1GotHit)
     {
+        animatorWinScreen.SetTrigger("Win");
+        animatorPlayer.SetTrigger("Win");
+        animatorWin.SetTrigger("Win");
+        
+
         if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
         {
+            winScreenColor.color = playerTwoColor;
+
             winText.color = playerTwoColor;
             playerName.color = playerTwoColor;
-            playerName.text = FindObjectOfType<MenuManager>().getP1name();
+            playerName.text = menuMan.getP2name();
 
-            winScreenColor.color = playerTwoColor;
+            display_ProjectorName.text = menuMan.getP2name();
         }
         if ((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
         {
             playerName.color = playerOneColor;
             winText.color = playerOneColor;
-            playerName.text = FindObjectOfType<MenuManager>().getP2name();
+            playerName.text = menuMan.getP1name();
 
+            display_ProjectorName.text = menuMan.getP1name();
             winScreenColor.color = playerOneColor;
+           
         }
-        animatorPlayer.SetTrigger("Win");   
+        
+
+        
 
 
         //animatorWins.SetTrigger("Win");

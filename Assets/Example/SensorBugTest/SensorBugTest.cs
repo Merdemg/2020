@@ -37,17 +37,20 @@ public class SensorBugTest : MonoBehaviour
 
     //ANIMATION VARIABLES
     //Round start
-
+    #region Projector
     [SerializeField] Animator p1_combo, p1_counter, p1_bigHit, p2_combo, p2_counter, p2_bigHit;
+    [SerializeField] Animator animatorProjectorReady;
+    [SerializeField] Animator animatorReadyScreen; // Holds the game object to set it active at the begining
 
+    [SerializeField] Image winScreenColor; 
+    #endregion
 
     public Animator animatorReady;
-    public Animator animatorStart;
     public Animator animatorP1Combo;
     public Animator animatorP2Combo;
     public Animator animatorP1BigHit;
     public Animator animatorP2BigHit;
-    //WINNER ANIMATION SHIT
+    //WINNER ANIMATION SHIT / Ok..
     public Animator animatorPlayer;
     //public Animator animatorWins;
     public TextMeshProUGUI playerName, winText;
@@ -163,7 +166,10 @@ public class SensorBugTest : MonoBehaviour
         {
             case 4:     // GAME STARTS
                 animatorReady.SetTrigger("MatchStart");
-                animatorStart.SetTrigger("MatchStart");
+
+                animatorProjectorReady.SetTrigger("MatchStart");
+                animatorReadyScreen.SetTrigger("MatchStart");
+
                 startTimer();
                 recordVideo.GetComponent<ReplayCam>().StartRecording();
                 break;
@@ -353,12 +359,14 @@ public class SensorBugTest : MonoBehaviour
         if (ComboTimer1 > 2)
         {
             animatorP1Combo.SetBool("Combo", false);
+            p1_combo.SetBool("Combo", false);
             P1ComboHits = 0;
             P1HealthLoss = 0;
         }
         if (ComboTimer2 > 2)
         {
             animatorP2Combo.SetBool("Combo", false);
+            p2_combo.SetBool("Combo", false);
             P2ComboHits = 0;
             P2HealthLoss = 0;
         }
@@ -562,7 +570,7 @@ public class SensorBugTest : MonoBehaviour
 
                             //check if player is dead
 
-                            if (Player1HealthValue == 0)
+                            if (p1healthBar.value <= 0)
                             {
                                 TriggerPlayerDeath(IsPlayer1Red, true);
                             }
@@ -596,7 +604,7 @@ public class SensorBugTest : MonoBehaviour
                             Player2HealthValue = UpdatePlayerHealth(sBytes, false);
                             //check if player is dead
 
-                            if (Player2HealthValue == 0)
+                            if (p2healthBar.value <= 0)
                             {
                                 TriggerPlayerDeath(IsPlayer1Red, false);
                             }
@@ -756,14 +764,19 @@ public class SensorBugTest : MonoBehaviour
             playerName.color = playerTwoColor;
             playerName.text = FindObjectOfType<MenuManager>().getP1name();
 
+            winScreenColor.color = playerTwoColor;
         }
         if ((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
         {
             playerName.color = playerOneColor;
             winText.color = playerOneColor;
             playerName.text = FindObjectOfType<MenuManager>().getP2name();
+
+            winScreenColor.color = playerOneColor;
         }
-        animatorPlayer.SetTrigger("Win");
+        animatorPlayer.SetTrigger("Win");   
+
+
         //animatorWins.SetTrigger("Win");
     }
 

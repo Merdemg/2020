@@ -8,8 +8,9 @@ public class UIBehaiviour : MonoBehaviour
 	//public Text timerText;
 	public float timer;
     [SerializeField] TextMeshProUGUI timerText;
+    [SerializeField] TextMeshProUGUI timerProjectorText;
 
-	public Slider hpBar;
+    public Slider hpBar;
 	public int hpMax;
     bool hasStarted = false;
 
@@ -42,6 +43,7 @@ public class UIBehaiviour : MonoBehaviour
                 timer = timer - Time.deltaTime;
                
                 timerText.text = "" + Mathf.Floor(timer);
+                timerProjectorText.text = "" + Mathf.Floor(timer);
 
             }
         }

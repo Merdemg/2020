@@ -116,16 +116,16 @@ public class MenuManager : MonoBehaviour
     public void newNameP1()
     {
         newName(true);
-        p1inputf.Select();
         p1inputf.ActivateInputField();
+        p1inputf.Select();
         //p1dropdownChoice(dropdownP1.value);
     }
 
     public void newNameP2()
     {
         newName(false);
-        p2inputf.Select();
         p2inputf.ActivateInputField();
+        p2inputf.Select();
         //p2dropdownChoice(dropdownP2.value);
     }
 

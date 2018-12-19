@@ -227,6 +227,7 @@ public class SensorBugTest : MonoBehaviour
         SubscribingToAccelerometer,
         Disconnect,
         Disconnecting,
+        MakingList,
     }
 
     private bool _connected = false;
@@ -317,7 +318,7 @@ public class SensorBugTest : MonoBehaviour
         Reset();
         BluetoothLEHardwareInterface.Initialize(true, false, () => {
 
-            SetState(States.Scan, 2.5f);
+            SetState(States.Scan, 0.1f);
 
         }, (error) => {
 
@@ -344,8 +345,8 @@ public class SensorBugTest : MonoBehaviour
     void Update()
     {
         //Update Health Percent on Projector Screen
-        p1_hpPercent = Mathf.Round (( p1healthBar.value/ maxHealth) * 100);
-        p2_hpPercent = Mathf.Round(( p2healthBar.value / maxHealth) * 100);
+        p1_hpPercent = Mathf.Round((p1healthBar.value / maxHealth) * 100);
+        p2_hpPercent = Mathf.Round((p2healthBar.value / maxHealth) * 100);
 
         p1_hpText.text = p1_hpPercent + "%";
         p2_hpText.text = p2_hpPercent + "%";
@@ -385,6 +386,14 @@ public class SensorBugTest : MonoBehaviour
         if (ThreeHitCombo2On)
             ThreeHitTimer2 += Time.deltaTime;
 
+        if (_state == States.Scan) { 
+        scanTimer += Time.deltaTime;
+            if(scanTimer > 3.0f)
+            {
+                SetState(States.MakingList, 0.1f);
+            }
+        }
+
         if (_timeout > 0f)
         {
             _timeout -= Time.deltaTime;
@@ -399,23 +408,27 @@ public class SensorBugTest : MonoBehaviour
 
                     //Scanning will look for a device that has the device name defined at the top of the code, currently "BLE2020"
                     case States.Scan:
-                        scanTimer += Time.deltaTime;
+                        //scanTimer += Time.deltaTime;
                         //debugText.text = "I ran";
                         //BigHitText.text = "Scan mode start";
+                        scanTimer = 0.0f;
+                        //SetState(States.MakingList, 0.1f);
                         int compare;
                         DeviceInfo device;
                         BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(null, null, (address, deviceName, signalStrength, bytes) =>
                         {
                             //if (deviceName.Contains(DeviceName) && scanTimer <= 0.5f)
-                            if (deviceName.Contains(DeviceName) && scanTimer <= 2.0f && connection == true)
+                            //ConnectStatus.text = "Found a device: " + deviceName;
+                            if (deviceName.Contains(DeviceName) && scanTimer <= 3.0f && connection == true)
                             {
+                                ConnectStatus.text = "Added 2020 Device";
                                 //BigHitText.text = "Found a 2020 Armor device";
                                 device = new DeviceInfo();
                                 device.dAddress = address;
                                 device.dSignal = signalStrength;
                                 deviceList.Add(device);
                             }
-                            else
+                            /*else
                             {
                                 //foreach (DeviceInfo dI in deviceList)
                                 //{
@@ -434,8 +447,28 @@ public class SensorBugTest : MonoBehaviour
                                 }
                                 ConnectStatus.text = "Connecting...";
                                 SetState(States.Connect, 0.5f);
-                            }
+                            }*/
                         }, true);
+                        break;
+
+                    case States.MakingList:
+                        
+                            ConnectStatus.text = "Going through list";
+                            BluetoothLEHardwareInterface.StopScan();
+                        _deviceAddress = deviceList[0].dAddress;
+                        compare = deviceList[0].dSignal;
+                        for (int i = 0; i < deviceList.Count; i++)
+                        {
+                            if (compare <= deviceList[i].dSignal)
+                            {
+                                _deviceAddress = deviceList[i].dAddress;
+                                compare = deviceList[i].dSignal;
+                            }
+                        }
+                        ConnectStatus.text = "Connecting...";
+                        SetState(States.Connect, 0.5f);
+                
+
                         break;
 
                     //After a device has been found it will automatically connect with it...
@@ -464,7 +497,7 @@ public class SensorBugTest : MonoBehaviour
                                     _connected = true;
 
                                     // SetState (States.ReadPairingStatus, 3f);
-                                    SetState(States.SubscribeToAccelerometer, 3f);
+                                    SetState(States.SubscribeToAccelerometer, 0.1f);
                                 }
                             }
                         }, (disconnectAddress) => {
@@ -480,7 +513,7 @@ public class SensorBugTest : MonoBehaviour
 
                     case States.SubscribeToAccelerometer:
 
-                        int subscriptionDelayTime = 500;
+                        int subscriptionDelayTime = 250;
                         
                         SetState(States.SubscribingToAccelerometer, 10f);
                         SensorBugStatusMessage = "Subscribing to Game Mode...";

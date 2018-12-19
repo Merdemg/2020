@@ -24,6 +24,10 @@ public class MenuManager : MonoBehaviour
 
     int p1Selection, p2Selection;
 
+    bool isInputTimeP1 = false;
+    bool isInputTimeP2 = false;
+
+
     // Use this for initialization
     void Start()
     {
@@ -42,6 +46,21 @@ public class MenuManager : MonoBehaviour
     {
         //Debug.Log( names.Count.ToString());
         //    Debug.Log("names length: " + names.Count);
+
+        if (isInputTimeP1)
+        {
+            isInputTimeP1 = false;
+            //p1inputf.ActivateInputField();
+            p1inputf.Select();
+            //TouchScreenKeyboard.Open(p1inputf.text);
+        }
+        if (isInputTimeP2)
+        {
+            isInputTimeP2 = false;
+            p2inputf.ActivateInputField();
+        }
+
+
     }
 
     void populateList()
@@ -83,7 +102,7 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log(index + " chosen");
         dropdownChoice(index, false);
-        p2inputf.text = "";
+        //p2inputf.text = "";
 
         p2name1.text = names[index];
         p2name2.text = names[index];
@@ -95,7 +114,7 @@ public class MenuManager : MonoBehaviour
         Debug.Log("---------------- names length: " + names.Count);
         Debug.Log(index + " chosen");
         dropdownChoice(index, true);
-        p1inputf.text = "";
+        //p1inputf.text = "";
 
         p1name1.text = names[index];
         p1name2.text = names[index];
@@ -107,6 +126,14 @@ public class MenuManager : MonoBehaviour
         if (index + 1 >= names.Count)
         {
            newName(isP1);
+            if (isP1)
+            {
+                isInputTimeP1 = true;
+            }
+            else
+            {
+                isInputTimeP2 = true;
+            }
         }
         else
         {
@@ -118,18 +145,18 @@ public class MenuManager : MonoBehaviour
     public void newNameP1()
     {
         newName(true);
-        p1inputf.ActivateInputField();
-        p1inputf.Select();
-        TouchScreenKeyboard.Open(p1inputf.text);
+        //p1inputf.ActivateInputField();
+        //p1inputf.Select();
+        //TouchScreenKeyboard.Open(p1inputf.text);
         //p1dropdownChoice(dropdownP1.value);
     }
 
     public void newNameP2()
     {
         newName(false);
-        p2inputf.ActivateInputField();
-        p2inputf.Select();
-        TouchScreenKeyboard.Open(p2inputf.text);
+        //p2inputf.ActivateInputField();
+        //p2inputf.Select();
+        //TouchScreenKeyboard.Open(p2inputf.text);
         //p2dropdownChoice(dropdownP2.value);
     }
 
@@ -152,6 +179,20 @@ public class MenuManager : MonoBehaviour
         dropdownP2.ClearOptions();
         dropdownP2.AddOptions(names);
 
+        if (isP1)
+        {
+            p1inputf.Select();
+        }
+        else
+        {
+            p2inputf.Select();
+        }
+
+        //getpic();
+    }
+
+    void getPic(bool isP1)
+    {
         if (isP1)
         {
             dropdownP1.value = names.Count - 2;
@@ -307,6 +348,9 @@ public class MenuManager : MonoBehaviour
         dropdownP2.AddOptions(names);
 
         p1dropdownChoice(dropdownP1.value);
+
+        p1inputf.text = "";
+        getPic(true);
     }
 
     public void editP2name(string newName)
@@ -321,6 +365,9 @@ public class MenuManager : MonoBehaviour
         dropdownP2.AddOptions(names);
 
         p2dropdownChoice(dropdownP2.value);
+
+        p2inputf.text = "";
+        getPic(false);
     }
 
 

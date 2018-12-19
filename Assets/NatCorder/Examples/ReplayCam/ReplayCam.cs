@@ -12,9 +12,11 @@ namespace NatCorderU.Examples {
     using Core.Recorders;
     using Core.Clocks;
     using NatShareU;
+    using UnityEngine.UI;
+
 
     public class ReplayCam : MonoBehaviour {
-        public Text debugTest;
+        //public Text debugTest;
         /**
         * ReplayCam Example
         * -----------------
@@ -30,13 +32,17 @@ namespace NatCorderU.Examples {
         [Header("Microphone")]
         public bool recordMicrophone;
         public AudioSource microphoneSource;
+        
 
         private CameraRecorder videoRecorder;
         private AudioRecorder audioRecorder;
         private IClock recordingClock;
 
+    
+
         public void StartRecording () {
-            debugTest.text = "RECORDING";
+            //debugTest.text = "RECORDING";
+            //ConnectStatus.text = "Added 2020 Device";
             // First make sure recording microphone is only on MP4
             recordMicrophone &= container == Container.MP4;
             // Create recording configurations // Clamp video width to 720
@@ -75,11 +81,12 @@ namespace NatCorderU.Examples {
 
         public void EndGameRecord()
         {
+            //bugTest.text = "ENDING GAME RECORD";
             Invoke("StopRecording", 5.0f);
         }
 
         public void StopRecording () {
-            debugTest.text = "FINISH RECORD";
+           //debugTest.text = "FINISH RECORD";
             // Stop the microphone if we used it for recording
             if (recordMicrophone) {
                 Microphone.End(null);
@@ -92,7 +99,7 @@ namespace NatCorderU.Examples {
         }
 
         void OnReplay (string path) {
-            debugTest.text = "SAVING";
+            //debugTest.text = "SAVING";
             NatShare.SaveToCameraRoll(path);
             Debug.Log("Saved recording to: "+path);
             // Playback the video

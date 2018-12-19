@@ -56,6 +56,8 @@ public class SensorBugTest : MonoBehaviour
     public Animator animatorP2Combo;
     public Animator animatorP1BigHit;
     public Animator animatorP2BigHit;
+    public Animator animatorP1Counter;
+    public Animator animatorP2Counter;
     //WINNER ANIMATION SHIT / Ok..
     public Animator animatorPlayer;
     //public Animator animatorWins;
@@ -182,7 +184,9 @@ public class SensorBugTest : MonoBehaviour
                 startTimer();
                 recordVideo.GetComponent<ReplayCam>().StartRecording();
                 break;
-            case 8:     // GAME ENDS
+            case 6:     // GAME ENDS
+                ConnectInfo.SetActive(true);
+                ConnectStatus.text = "Got here?";
                 recordVideo.GetComponent<ReplayCam>().EndGameRecord();
                 endGame();
                 break;
@@ -1023,8 +1027,11 @@ public class SensorBugTest : MonoBehaviour
                 P2Points += 10000;
             }
             //Counter score
-            if (ComboTimer1 > 0 && ComboTimer1 <= 1.0f)
-                P2Points += 5000;
+            if (ComboTimer1 > 0 && ComboTimer1 <= 1.0f) { 
+            animatorP2Counter.SetBool("Counter", true);
+            p2_counter.SetBool("Counter", true);
+            P2Points += 5000;
+        }
         }
         //Check p1 points
         if ((IsP1Red && !Player1GotHit) || (!IsP1Red && Player1GotHit))
@@ -1047,8 +1054,11 @@ public class SensorBugTest : MonoBehaviour
                 P1Points += 10000;
             }
             //Counter score
-            if (ComboTimer2 > 0 && ComboTimer2 <= 1.0f)
-                P1Points += 5000;
+            if (ComboTimer2 > 0 && ComboTimer2 <= 1.0f) { 
+            animatorP1Counter.SetBool("Counter", true);
+            p1_counter.SetBool("Counter", true);
+            P1Points += 5000;
+        }
         }
     }
 

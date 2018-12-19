@@ -18,6 +18,11 @@ public class GalleryManager : MonoBehaviour
 
     [SerializeField] GameObject p1_overlay, p2_overlay;
 
+    [SerializeField] TMP_InputField p1inputf, p2inputf;
+
+
+    
+
     // Use this for initialization
     void Start()
     {
@@ -33,7 +38,7 @@ public class GalleryManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void getGalleryImageP1()
@@ -69,7 +74,7 @@ public class GalleryManager : MonoBehaviour
         if (isP1)
         {
             imageP1.texture = tex;
-            imageP1.SetNativeSize();
+            //imageP1.SetNativeSize();
 
 
             p1ActualImage1.texture = tex;
@@ -78,7 +83,7 @@ public class GalleryManager : MonoBehaviour
         else
         {
             imageP2.texture = tex;
-            imageP2.SetNativeSize();
+            //imageP2.SetNativeSize();
 
 
             p2ActualImage1.texture = tex;
@@ -132,7 +137,7 @@ public class GalleryManager : MonoBehaviour
                 //image.material.mainTexture = texture;
                 image.texture = texture;
 
-                image.SetNativeSize();
+                //image.SetNativeSize();
 
                 int i;
                 // SAVE THE PATH TO PLAYERPREFS for profile
@@ -142,6 +147,8 @@ public class GalleryManager : MonoBehaviour
 
                     p1ActualImage1.texture = texture;
                     p1ActualImage2.texture = texture;
+
+                   // isInputTimeP1 = true;
                 }
                 else
                 {
@@ -149,6 +156,8 @@ public class GalleryManager : MonoBehaviour
 
                     p2ActualImage1.texture = texture;
                     p2ActualImage2.texture = texture;
+
+                    //isInputTimeP2 = true;
                 }
 
                 setScales();
@@ -197,10 +206,14 @@ public class GalleryManager : MonoBehaviour
 
     void setScales()
     {
-        p1ActualImage1.transform.localScale = imageP1.transform.localScale;
-        p1ActualImage2.transform.localScale = imageP1.transform.localScale;
-        p2ActualImage1.transform.localScale = imageP2.transform.localScale;
-        p2ActualImage2.transform.localScale = imageP2.transform.localScale;
+        //p1ActualImage1.SetNativeSize();
+        //p1ActualImage2.SetNativeSize();
+        //p2ActualImage1.SetNativeSize();
+        //p2ActualImage2.SetNativeSize();
+        //p1ActualImage1.transform.localScale = imageP1.transform.localScale;
+        //p1ActualImage2.transform.localScale = imageP1.transform.localScale;
+        //p2ActualImage1.transform.localScale = imageP2.transform.localScale;
+        //p2ActualImage2.transform.localScale = imageP2.transform.localScale;
     }
 
     public void ChooseRedPlayer() {

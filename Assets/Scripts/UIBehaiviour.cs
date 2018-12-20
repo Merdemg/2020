@@ -71,7 +71,7 @@ public class UIBehaiviour : MonoBehaviour
         }
         else
         {
-            timerText.text = "" + 236;
+            timerText.text = "";
             timer = 255;
         }
     }

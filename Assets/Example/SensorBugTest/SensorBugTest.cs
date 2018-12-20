@@ -70,6 +70,12 @@ public class SensorBugTest : MonoBehaviour
 
     int test = 0;
 
+    int redWins = 0;
+    int blueWins = 0;
+
+    [SerializeField] Image redWin1, redWin2, blueWin1, blueWin2;
+    [SerializeField] Image projRedWin1, projRedWin2, projBlueWin1, projBlueWin2;
+
     public class Characteristic
     {
         public string ServiceUUID;
@@ -247,6 +253,8 @@ public class SensorBugTest : MonoBehaviour
     {
         //timerAmount = amount;
         GetComponent<UIBehaiviour>().resetTimer(amount);
+
+
     }
 
 
@@ -857,6 +865,9 @@ public class SensorBugTest : MonoBehaviour
             playerName.text = menuMan.getP2name();
 
             display_ProjectorName.text = menuMan.getP2name();
+
+            blueWins++;
+            setWins();
         }
         if ((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
         {
@@ -866,7 +877,9 @@ public class SensorBugTest : MonoBehaviour
 
             display_ProjectorName.text = menuMan.getP1name();
             winScreenColor.color = playerOneColor;
-           
+
+            redWins++;
+            setWins();
         }
         
 
@@ -1105,5 +1118,48 @@ public class SensorBugTest : MonoBehaviour
     public void setp2name(string name)
     {
         p2name = name;
+    }
+
+    void setWins()
+    {
+        if (redWins > 0)
+        {
+            redWin1.color = Color.yellow;
+            projRedWin1.color = Color.yellow;
+
+            if (redWins > 1)
+            {
+                redWin2.color = Color.yellow;
+                projRedWin2.color = Color.yellow;
+            }
+        }
+
+        if (blueWins > 0)
+        {
+            blueWin1.color = Color.yellow;
+            projBlueWin1.color = Color.yellow;
+
+            if (blueWins > 1)
+            {
+                blueWin2.color = Color.yellow;
+                projBlueWin2.color = Color.yellow;
+            }
+        }
+    }
+
+    public void resetWins()
+    {
+        redWins = 0;
+        blueWins = 0;
+
+        redWin1.color = Color.white;
+        redWin2.color = Color.white;
+        blueWin1.color = Color.white;
+        blueWin2.color = Color.white;
+
+        projRedWin1.color = Color.white;
+        projRedWin2.color = Color.white;
+        projBlueWin1.color = Color.white;
+        projBlueWin2.color = Color.white;
     }
 }

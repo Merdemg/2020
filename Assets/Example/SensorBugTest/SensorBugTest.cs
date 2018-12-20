@@ -140,6 +140,7 @@ public class SensorBugTest : MonoBehaviour
     float P1HealthLoss, P2HealthLoss;
     int P1ComboHits, P2ComboHits;
     float P1BigHitHealthLoss, P2BigHitHealthLoss;
+    bool bGameStarted = false;
 
     
 
@@ -175,19 +176,51 @@ public class SensorBugTest : MonoBehaviour
         switch (stateNum)
         {
             case 4:     // GAME STARTS
+
+                if (!bGameStarted) { 
                 animatorReadyScreen.SetTrigger("MatchStart");
                 animatorReady.SetTrigger("MatchStart");
 
                 animatorProjectorReady.SetTrigger("MatchStart");
-                
+                bGameStarted = true;
 
                 startTimer();
-                recordVideo.GetComponent<ReplayCam>().StartRecording();
+
+                // if (GetComponent<Screen_Manager>().getGameMode() != 1) { 
+                recordVideo.GetComponent<ReplayCam>().StartRecording(); }
+                else
+                {
+                    startTimer();
+                }
+                 //}
+                break;
+
+            case 5:
+
+                stopTimer();
+
                 break;
             case 6:     // GAME ENDS
-                ConnectInfo.SetActive(true);
-                ConnectStatus.text = "Got here?";
-                recordVideo.GetComponent<ReplayCam>().EndGameRecord();
+                //ConnectInfo.SetActive(true);
+                //ConnectStatus.text = "Got here?";
+
+                //winner should go here for incase time is finished?
+                if (p1healthBar.value < p2healthBar.value)
+                {
+
+                    TriggerPlayerDeath(IsPlayer1Red, true);
+                }
+                else
+                {
+                    TriggerPlayerDeath(IsPlayer1Red, false);
+                }
+                bGameStarted = false;
+                stopTimer();
+                //if (GetComponent<Screen_Manager>().getGameMode() != 1)
+                //{
+                    recordVideo.GetComponent<ReplayCam>().EndGameRecord();
+               // }
+            
                 endGame();
                 break;
             default:
@@ -198,6 +231,11 @@ public class SensorBugTest : MonoBehaviour
     void startTimer()
     {
         GetComponent<UIBehaiviour>().startTimer();
+    }
+
+    void stopTimer()
+    {
+        GetComponent<UIBehaiviour>().stopTimer();
     }
 
     void endGame()
@@ -241,6 +279,12 @@ public class SensorBugTest : MonoBehaviour
     private bool _pairing = false;
 
     private byte[] _accelerometerConfigureBytes = new byte[] { 0x01, 0x01 };
+
+    private void Start()
+    {
+        //make sure screen never goes to sleep?
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+    }
 
     string SensorBugStatusMessage
     {
@@ -316,6 +360,7 @@ public class SensorBugTest : MonoBehaviour
     // if device has been found it will try to pair
     public void StartConnect()
     {
+        
         deviceList = new List<DeviceInfo>();
         deviceList.RemoveRange(0, deviceList.Count);
         scanTimer = 0.0f;
@@ -326,18 +371,9 @@ public class SensorBugTest : MonoBehaviour
 
         }, (error) => {
 
-            if (_state == States.SubscribingToAccelerometer)
-            {
-                _pairing = true;
-                SensorBugStatusMessage = "Pairing to 2020 device";
+            ConnectStatus.text = "Please turn on Bluetooth and restart app";
 
-                // if we get an error when trying to subscribe to the SensorBug it is
-                // most likely because we just paired with it. Right after pairing you
-                // have to disconnect and reconnect before being able to subscribe.
-                SetState(States.Disconnect, 0.1f);
-            }
-
-            BluetoothLEHardwareInterface.Log("Error: " + error);
+            //BluetoothLEHardwareInterface.Log("Error: " + error);
         });
     }
 
@@ -616,11 +652,11 @@ public class SensorBugTest : MonoBehaviour
 
                             //check if player is dead
 
-                            if (p1healthBar.value <= 0)
-                            {
+                            //if (p1healthBar.value <= 0)
+                            //{
                                 
-                                TriggerPlayerDeath(IsPlayer1Red, true);
-                            }
+                            //    TriggerPlayerDeath(IsPlayer1Red, true);
+                            //}
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
@@ -651,12 +687,12 @@ public class SensorBugTest : MonoBehaviour
                             Player2HealthValue = UpdatePlayerHealth(sBytes, false);
                             //check if player is dead
 
-                            if (p2healthBar.value <= 0)
-                            {
+                            //if (p2healthBar.value <= 0)
+                            //{
 
                                 //dText.text = "Void Called";
-                                TriggerPlayerDeath(IsPlayer1Red, false);
-                            }
+                            //    TriggerPlayerDeath(IsPlayer1Red, false);
+                            //}
 
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;

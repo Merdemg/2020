@@ -37,7 +37,7 @@ public class UIBehaiviour : MonoBehaviour
                 
                 timerText.text = "" + 0;
             }
-            if (timer > 0)
+            if (timer < 255)
             {
 
                 timer = timer - Time.deltaTime;
@@ -56,12 +56,24 @@ public class UIBehaiviour : MonoBehaviour
     
     }
 
-    public void resetTimer(float time)
+    public void stopTimer()
     {
-        timer = time;
-        timer = timer - Time.deltaTime;
-        timerText.text = "" + Mathf.Floor(timer);
+        hasStarted = false; 
     }
 
+    public void resetTimer(float time)
+    {
+        if (time != 0xff)
+        {
+            timer = time;
+            timer = timer - Time.deltaTime;
+            timerText.text = "" + Mathf.Floor(timer);
+        }
+        else
+        {
+            timerText.text = "" + 236;
+            timer = 255;
+        }
+    }
     
 }

@@ -7,7 +7,7 @@ using TMPro;
 public class logoManager : MonoBehaviour {
     [SerializeField] RawImage image;
     [SerializeField] RawImage imageInFightScene;
-    [SerializeField] TextMeshPro websiteText;
+    [SerializeField] TextMeshProUGUI websiteText;
 
 	// Use this for initialization
 	void Start () {

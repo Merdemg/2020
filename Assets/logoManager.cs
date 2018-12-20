@@ -7,10 +7,23 @@ using TMPro;
 public class logoManager : MonoBehaviour {
     [SerializeField] RawImage image;
     [SerializeField] RawImage imageInFightScene;
+    [SerializeField] TextMeshPro websiteText;
 
 	// Use this for initialization
 	void Start () {
-		
+        if (PlayerPrefs.GetString("2020gymPic") != null)
+        {
+            Texture2D tex;
+            if (NativeGallery.LoadImageAtPath(PlayerPrefs.GetString("2020gymPic"), 512) != null)
+            {
+                tex = NativeGallery.LoadImageAtPath(PlayerPrefs.GetString("2020gymPic"), 512);
+            }
+        }
+
+        if (PlayerPrefs.GetString("2020website") != null)
+        {
+            websiteText.text = PlayerPrefs.GetString("2020website");
+        }
 	}
 	
 	// Update is called once per frame
@@ -20,10 +33,10 @@ public class logoManager : MonoBehaviour {
 
     public void getImage()
     {
-
+        pickImage(512);
     }
 
-    void pickImage(int maxSize, RawImage image, bool isP1)
+    void pickImage(int maxSize)
     {
 
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
@@ -53,5 +66,16 @@ public class logoManager : MonoBehaviour {
         }, "Select a PNG image", "image/png", maxSize);
 
         Debug.Log("Permission result: " + permission);
+    }
+
+    public void setWebsite(string str)
+    {
+        if (str.Length > 30)
+        {
+            str = str.Substring(0, 30);
+        }
+
+        websiteText.text = str;
+        PlayerPrefs.SetString("2020website", str);
     }
 }

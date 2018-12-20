@@ -338,6 +338,11 @@ public class MenuManager : MonoBehaviour
 
     public void editP1name(string newName)
     {
+        if (newName.Length > 12)
+        {
+            newName = newName.Substring(0, 12);
+        }
+
         string s = "name" + dropdownP1.value;
         PlayerPrefs.SetString(s, newName);
         names[dropdownP1.value] = newName;
@@ -355,6 +360,11 @@ public class MenuManager : MonoBehaviour
 
     public void editP2name(string newName)
     {
+        if (newName.Length > 12)
+        {
+            newName = newName.Substring(0, 12);
+        }
+
         string s = "name" + dropdownP2.value;
         PlayerPrefs.SetString(s, newName);
         names[dropdownP2.value] = newName;
@@ -386,4 +396,6 @@ public class MenuManager : MonoBehaviour
     {
         return names[p2Selection];
     }
+
+
 }

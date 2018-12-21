@@ -24407,6 +24407,7 @@ MonoBehaviour:
   image: {fileID: 1401438126}
   imageInFightScene: {fileID: 1878583258}
   websiteText: {fileID: 68040235}
+  tapButtonText: {fileID: 68040235}
 --- !u!1 &1935475224
 GameObject:
   m_ObjectHideFlags: 0

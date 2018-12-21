@@ -83,4 +83,12 @@ public class logoManager : MonoBehaviour {
         tapButtonText.text = str;
         PlayerPrefs.SetString("2020website", str);
     }
+
+    public void discard()
+    {
+        image.texture = null;
+        imageInFightScene.texture = null;
+        websiteText.text = "";
+        tapButtonText.text = "ENTER YOUR MARTIAL ARTS CLUB";
+    }
 }

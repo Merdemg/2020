@@ -190,6 +190,29 @@ public class SensorBugTest : MonoBehaviour
                 animatorProjectorReady.SetTrigger("MatchStart");
                 bGameStarted = true;
 
+                    //check if blue or red already has 2 wins
+                    if((redWins == 2) || (blueWins == 2)){
+                        /*redWins = 0;
+                        blueWins = 0;
+
+                        redWin1.color = Color.white;
+                        projRedWin1.color = Color.white;
+
+                        redWin2.color = Color.white;
+                        projRedWin2.color = Color.white;
+
+                        blueWin1.color = Color.white;
+                        projBlueWin1.color = Color.white;
+
+                        blueWin2.color = Color.white;
+                        projBlueWin2.color = Color.white;*/
+                        resetWins();
+
+
+
+
+                    }
+
                 startTimer();
 
                 // if (GetComponent<Screen_Manager>().getGameMode() != 1) { 
@@ -864,7 +887,7 @@ public class SensorBugTest : MonoBehaviour
             playerName.color = playerTwoColor;
             playerName.text = menuMan.getP2name();
 
-            display_ProjectorName.text = menuMan.getP2name();
+            display_ProjectorName.text = menuMan.getP2name() + blueWins.ToString();
 
             blueWins++;
             setWins();
@@ -1152,14 +1175,14 @@ public class SensorBugTest : MonoBehaviour
         redWins = 0;
         blueWins = 0;
 
-        redWin1.color = Color.white;
-        redWin2.color = Color.white;
-        blueWin1.color = Color.white;
-        blueWin2.color = Color.white;
+        redWin1.color = Color.gray;
+        redWin2.color = Color.gray;
+        blueWin1.color = Color.gray;
+        blueWin2.color = Color.gray;
 
-        projRedWin1.color = Color.white;
-        projRedWin2.color = Color.white;
-        projBlueWin1.color = Color.white;
-        projBlueWin2.color = Color.white;
+        projRedWin1.color = Color.gray;
+        projRedWin2.color = Color.gray;
+        projBlueWin1.color = Color.gray;
+        projBlueWin2.color = Color.gray;
     }
 }

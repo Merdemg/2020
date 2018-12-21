@@ -213,7 +213,7 @@ public class SensorBugTest : MonoBehaviour
 
                     }
 
-                startTimer();
+                //startTimer();
 
                 // if (GetComponent<Screen_Manager>().getGameMode() != 1) { 
                 recordVideo.GetComponent<ReplayCam>().StartRecording(); }
@@ -609,6 +609,7 @@ public class SensorBugTest : MonoBehaviour
 
                             // PlaytimeSelectedValue = TimerValues[bytes[0]];
                             setTimerAmount((int)TimerValues[bytes[0]]);
+                            startTimer();
                             //AccelerometerText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                             //debugText.text = "Game Mode Selected: " + GameModeValue + "Game State Selected: " + GameStateValue + "Playtime Selected: " + PlaytimeSelectedValue;
                         });

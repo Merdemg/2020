@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 public class UIBehaiviour : MonoBehaviour
 {
 	//public Text timerText;
@@ -13,6 +14,9 @@ public class UIBehaiviour : MonoBehaviour
     public Slider hpBar;
 	public int hpMax;
     bool hasStarted = false;
+    DateTime startTime;
+    float elapsedTime;
+    float gameTime;
 
 	void Start ()
 	{
@@ -41,9 +45,14 @@ public class UIBehaiviour : MonoBehaviour
             {
 
                 timer = timer - Time.deltaTime;
-               
-                timerText.text = "" + Mathf.Floor(timer);
-                timerProjectorText.text = "" + Mathf.Floor(timer);
+
+                TimeSpan timeDiff = DateTime.Now - startTime;
+                double diff = timeDiff.TotalMilliseconds;
+                float fDiff = (float)diff;
+                
+                //timerText.text = "" + Mathf.Floor(timer);
+                timerText.text =    Mathf.Floor(gameTime - (fDiff/1000)).ToString();
+                timerProjectorText.text = Mathf.Floor(gameTime - (fDiff / 1000)).ToString();
 
             }
         }
@@ -68,10 +77,13 @@ public class UIBehaiviour : MonoBehaviour
             timer = time;
             timer = timer - Time.deltaTime;
             timerText.text = "" + Mathf.Floor(timer);
+            gameTime = time;
+            startTime = DateTime.Now;
         }
         else
         {
             timerText.text = "";
+            timerProjectorText.text = "";
             timer = 255;
         }
     }

@@ -77,11 +77,11 @@ public class MenuManager : MonoBehaviour
         debugText.text = names.Count + " obj in names.";
         if (names.Count < 1)
         {
-            names.Add("New Profile 1");
-            names.Add("New Profile 2");
+            names.Add("Player 1");
+            names.Add("Player 2");
 
-            PlayerPrefs.SetString("name0", "New Profile 1");
-            PlayerPrefs.SetString("name1", "New Profile 2");
+            PlayerPrefs.SetString("name0", "Player 1");
+            PlayerPrefs.SetString("name1", "Player 2");
         }
 
         //names.Add("NEW");

@@ -8,6 +8,7 @@ public class logoManager : MonoBehaviour {
     [SerializeField] RawImage image;
     [SerializeField] RawImage imageInFightScene;
     [SerializeField] TextMeshProUGUI websiteText;
+    [SerializeField] TextMeshProUGUI tapButtonText;
 
 	// Use this for initialization
 	void Start () {
@@ -17,12 +18,15 @@ public class logoManager : MonoBehaviour {
             if (NativeGallery.LoadImageAtPath(PlayerPrefs.GetString("2020gymPic"), 512) != null)
             {
                 tex = NativeGallery.LoadImageAtPath(PlayerPrefs.GetString("2020gymPic"), 512);
+                imageInFightScene.texture = tex;
+                image.texture = tex;
             }
         }
 
         if (PlayerPrefs.GetString("2020website") != null)
         {
             websiteText.text = PlayerPrefs.GetString("2020website");
+            tapButtonText.text = PlayerPrefs.GetString("2020website");
         }
 	}
 	
@@ -76,6 +80,7 @@ public class logoManager : MonoBehaviour {
         }
 
         websiteText.text = str;
+        tapButtonText.text = str;
         PlayerPrefs.SetString("2020website", str);
     }
 }

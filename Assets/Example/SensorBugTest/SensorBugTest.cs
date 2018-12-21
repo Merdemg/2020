@@ -229,7 +229,7 @@ public class SensorBugTest : MonoBehaviour
                 stopTimer();
 
                 break;
-            case 6:     // GAME ENDS
+            case 8:     // GAME ENDS
                 //ConnectInfo.SetActive(true);
                 //ConnectStatus.text = "Got here?";
 

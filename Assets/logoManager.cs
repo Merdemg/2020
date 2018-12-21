@@ -28,6 +28,11 @@ public class logoManager : MonoBehaviour {
             websiteText.text = PlayerPrefs.GetString("2020website");
             tapButtonText.text = PlayerPrefs.GetString("2020website");
         }
+        else
+        {
+            tapButtonText.text = "ENTER YOUR MARTIAL ARTS CLUB";
+            websiteText.text = "";
+        }
 	}
 	
 	// Update is called once per frame

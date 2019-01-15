@@ -234,14 +234,14 @@ public class SensorBugTest : MonoBehaviour
                 //ConnectStatus.text = "Got here?";
 
                 //winner should go here for incase time is finished?
-                if (p1healthBar.value < p2healthBar.value)
+                if (p1healthBar.value > p2healthBar.value)
                 {
 
-                    TriggerPlayerDeath(IsPlayer1Red, true);
+                    TriggerPlayerDeathTime(IsPlayer1Red, true);
                 }
                 else
                 {
-                    TriggerPlayerDeath(IsPlayer1Red, false);
+                    TriggerPlayerDeathTime(IsPlayer1Red, false);
                 }
                 bGameStarted = false;
                 stopTimer();
@@ -908,6 +908,46 @@ public class SensorBugTest : MonoBehaviour
         
 
         
+
+
+        //animatorWins.SetTrigger("Win");
+    }
+
+    void TriggerPlayerDeathTime(bool IsP1Red, bool Player1GotHit)
+    {
+        animatorWinScreen.SetTrigger("Win");
+        animatorPlayer.SetTrigger("Win");
+        animatorWin.SetTrigger("Win");
+
+
+        if ((IsP1Red && Player1GotHit) || (!IsP1Red && !Player1GotHit))
+        {
+            winScreenColor.color = playerTwoColor;
+
+            winText.color = playerTwoColor;
+            playerName.color = playerTwoColor;
+            playerName.text = menuMan.getP2name();
+
+            display_ProjectorName.text = menuMan.getP2name() + blueWins.ToString();
+
+            blueWins++;
+            setWins();
+        }
+        if ((!IsP1Red && Player1GotHit) || (IsP1Red && !Player1GotHit))
+        {
+            playerName.color = playerOneColor;
+            winText.color = playerOneColor;
+            playerName.text = menuMan.getP1name();
+
+            display_ProjectorName.text = menuMan.getP1name();
+            winScreenColor.color = playerOneColor;
+
+            redWins++;
+            setWins();
+        }
+
+
+
 
 
         //animatorWins.SetTrigger("Win");

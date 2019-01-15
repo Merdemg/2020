@@ -50,7 +50,7 @@ namespace NatCorderU.Examples {
             var height = Screen.height;
             //var height = width * Screen.height / Screen.width;
             var framerate = container == Container.GIF ? 10 : 30;
-            var videoFormat = new VideoFormat(width, height, framerate);
+            var videoFormat = new VideoFormat(1280, 720, framerate);
             var audioFormat = recordMicrophone ? AudioFormat.Unity: AudioFormat.None;
             // Create a recording clock for generating timestamps
             recordingClock = new RealtimeClock();
